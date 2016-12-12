@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:layout_gravity="center"
+    android:layout_marginBottom="5dp"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginTop="5dp"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/attendanceSubjectName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Computer Architecture"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/attendanceSubjectCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/attendanceSubjectName"
+            android:layout_marginLeft="13dp"
+            android:layout_marginTop="3dp"
+            android:text="(CSE-1001)"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/attendanceUpdatedAt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:text="18/11/2016" />
+
+        <TextView
+            android:id="@+id/classesTakenText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/attendanceSubjectName"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="35dp"
+            android:text="Classes taken" />
+
+        <TextView
+            android:id="@+id/classesTakenValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/attendanceSubjectName"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="32dp"
+            android:layout_toRightOf="@id/classesTakenText"
+            android:text="48"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/classesAttendedText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/classesTakenText"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:text="Classes attended" />
+
+        <TextView
+            android:id="@+id/classesAttendedValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/classesTakenText"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="17dp"
+            android:layout_toRightOf="@id/classesAttendedText"
+            android:text="36"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/classesBunkedText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/classesAttendedText"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:text="Classes bunked" />
+
+        <TextView
+            android:id="@+id/classesBunkedValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/classesAttendedText"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="17dp"
+            android:layout_toRightOf="@id/classesBunkedText"
+            android:gravity="right"
+            android:text="9"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <at.grabner.circleprogress.CircleProgressView
+            android:id="@+id/subjectPercentage"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_below="@+id/attendanceUpdatedAt"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="15dp"
+            android:layout_toRightOf="@+id/classesAttendedText"
+            android:foregroundGravity="center"
+            app:cpv_autoTextColor="true"
+            app:cpv_barColor="#3d4a97"
+            app:cpv_barWidth="2dp"
+            app:cpv_fillColor="#fcfcfc"
+            app:cpv_innerContourColor="@color/primary"
+            app:cpv_outerContourColor="@color/primary"
+            app:cpv_rimColor="#2c6776a4"
+            app:cpv_rimWidth="2dp"
+            app:cpv_seekMode="true"
+            app:cpv_textMode="Value"
+            app:cpv_textSize="40sp"
+            app:cpv_value="0" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

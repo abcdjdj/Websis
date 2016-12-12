@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/menu_attendance"
+            android:icon="@drawable/ic_group_black_24dp"
+            android:title="Attendance" />
+
+        <item
+            android:id="@+id/menu_marks"
+            android:icon="@drawable/ic_poll_black_24dp"
+            android:title="Marks" />
+
+        <item
+            android:id="@+id/menu_gpa"
+            android:icon="@drawable/ic_school_black_24dp"
+            android:title="GPA" />
+
+        <item
+            android:id="@+id/menu_logout"
+            android:icon="@drawable/ic_power_settings_new_black_24dp"
+            android:title="Logout" />
+
+    </group>
+
+</menu>
