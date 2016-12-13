@@ -130,7 +130,7 @@
             app:cpv_rimColor="#2c6776a4"
             app:cpv_rimWidth="2dp"
             app:cpv_seekMode="true"
-            app:cpv_textMode="Value"
+            app:cpv_textMode="Percent"
             app:cpv_textSize="40sp"
             app:cpv_value="0" />
 

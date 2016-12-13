@@ -35,6 +35,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.manipal.websis.R;
+import com.manipal.websis.RandomUtils;
 import com.manipal.websis.adapter.AttendanceAdapter;
 import com.manipal.websis.adapter.MarksAdapter;
 import com.manipal.websis.model.Attendance;
@@ -50,11 +51,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.support.design.widget.Snackbar.make;
 import static com.manipal.websis.Constants.CACHE;
+import static com.manipal.websis.Constants.CACHE_FILE;
 import static com.manipal.websis.Constants.DATE_OF_BIRTH;
 import static com.manipal.websis.Constants.LOGIN_PREFS;
 import static com.manipal.websis.Constants.REG_NO;
@@ -77,9 +82,10 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Mark> marksList;
     private ArrayList<Grade> gradeList;
     private ProgressBar headerProgress;
-
+    private Date date;
     private AlertDialog.Builder builder;
     private TextView errorText;
+    private Snackbar snackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,7 +195,9 @@ public class MainActivity extends AppCompatActivity {
         headerBranch.setVisibility(View.GONE);
         headerError.setVisibility(View.GONE);
         headerProgress.setVisibility(View.VISIBLE);
-
+        if (snackbar != null) {
+            snackbar.dismiss();
+        }
         final String regno = prefs.getString(REG_NO, "");
         Log.d("Registration number", regno);
         mainView.setVisibility(View.INVISIBLE);
@@ -229,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
             return;
         }
-        File file = new File(getExternalCacheDir() + "/data.json");
+        File file = new File(getExternalCacheDir() + CACHE_FILE);
         FileOutputStream fout = new FileOutputStream(file);
         Log.d("Writing to cache", response);
         fout.write(response.getBytes());
@@ -256,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             dialogInterface.dismiss();
                             try {
-                                getDataFromCache();
+                                readDataFromCache();
                             } catch (IOException e) {
                                 e.printStackTrace();
                                 if (e instanceof FileNotFoundException) {
@@ -271,18 +279,21 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             dialogInterface.dismiss();
-                            Snackbar.make(errorView, "Cannot reach websis", Snackbar.LENGTH_SHORT).show();
+                            make(errorView, "Cannot reach websis", Snackbar.LENGTH_SHORT).show();
                         }
                     });
             builder.show();
         } else {
-            Snackbar.make(errorView, "Cannot reach websis", Snackbar.LENGTH_SHORT).show();
+            make(errorView, "Cannot reach websis", Snackbar.LENGTH_SHORT).show();
         }
 
     }
 
-    private void getDataFromCache() throws IOException {
-        File file = new File(getExternalCacheDir() + "/data.json");
+    private void readDataFromCache() throws IOException {
+        File file = new File(getExternalCacheDir() + CACHE_FILE);
+        long time = file.lastModified();
+        date = new Date(time);
+        Log.d("Last modified of cache", SimpleDateFormat.getInstance().format(date));
         Log.d("File path of cache", file.getAbsolutePath());
         FileInputStream fin = new FileInputStream(file);
         byte[] bytes = new byte[fin.available()];
@@ -339,7 +350,13 @@ public class MainActivity extends AppCompatActivity {
         errorView.setVisibility(View.INVISIBLE);
         loadingView.setVisibility(View.INVISIBLE);
         if (fromCache) {
-            Snackbar.make(mainView, "Successfully loaded data from cache!", Snackbar.LENGTH_LONG).show();
+            String dateFormat = SimpleDateFormat.getInstance().format(date);
+            snackbar = Snackbar.make(mainView, "Offline data updated on " + RandomUtils.getProperDateMessage(dateFormat), 10000);
+            snackbar.setAction("Dismiss", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                }
+            }).setDuration(10000).setActionTextColor(Color.YELLOW).show();
         }
     }
 
@@ -356,6 +373,9 @@ public class MainActivity extends AppCompatActivity {
     private void logoutUser() {
         queue.cancelAll(MainActivity.this);
         prefs.edit().clear().apply();
+        File file = new File(getExternalCacheDir() + CACHE_FILE);
+        boolean del = file.delete();
+        Log.d("File delete", "" + del);
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         finish();
     }

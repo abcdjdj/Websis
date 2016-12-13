@@ -1,9 +1,5 @@
 package com.manipal.websis;
 
-/**
- * Created by Sudarshan Sunder on 12/12/2016.
- */
-
 public class Constants {
 
     public static final String URL = "https://tacos.adityawalvekar.com/show";
@@ -15,6 +11,8 @@ public class Constants {
     public static final String DATE_OF_BIRTH = "dateofbirth";
     public static final String REG_NO = "regno";
     public static final String AUTH = "auth";
+
+    public static final String CACHE_FILE = "/data.json";
 
     public static final String LOGIN_PREFS = "loginprefs";
 
