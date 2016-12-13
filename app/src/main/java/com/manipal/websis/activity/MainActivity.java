@@ -1,13 +1,16 @@
 package com.manipal.websis.activity;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -25,11 +28,9 @@ import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -47,13 +48,16 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.manipal.websis.Constants.ERROR;
-import static com.manipal.websis.Constants.ERROR_TYPE;
+import static com.manipal.websis.Constants.CACHE;
+import static com.manipal.websis.Constants.DATE_OF_BIRTH;
+import static com.manipal.websis.Constants.LOGIN_PREFS;
+import static com.manipal.websis.Constants.REG_NO;
 import static com.manipal.websis.Constants.SHOULD_GET;
 import static com.manipal.websis.Constants.URL;
 import static com.manipal.websis.Constants.USER_DATA;
@@ -82,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         queue = Volley.newRequestQueue(this);
-        prefs = getSharedPreferences("login_prefs", MODE_PRIVATE);
+        prefs = getSharedPreferences(LOGIN_PREFS, MODE_PRIVATE);
         loadingView = findViewById(R.id.main_loading_include);
         errorView = findViewById(R.id.main_error_include);
         errorText = (TextView) errorView.findViewById(R.id.loading_error_text);
@@ -143,19 +147,15 @@ public class MainActivity extends AppCompatActivity {
                 refreshLayout.setRefreshing(false);
             }
         });
-        if (!getIntent().getBooleanExtra(ERROR, true)) {
-            if (getIntent().getBooleanExtra(SHOULD_GET, true))
-                getInformation();
-            else {
-                String json = getIntent().getStringExtra(USER_DATA);
-                try {
-                    parseJsonAndPopulateViews(json);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+        if (getIntent().getBooleanExtra(SHOULD_GET, true))
+            getInformation();
+        else {
+            String json = getIntent().getStringExtra(USER_DATA);
+            try {
+                parseJsonAndPopulateViews(json, false);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } else {
-            handleVolleyError((VolleyError) getIntent().getParcelableExtra(ERROR_TYPE));
         }
     }
 
@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         headerError.setVisibility(View.GONE);
         headerProgress.setVisibility(View.VISIBLE);
 
-        final String regno = prefs.getString("registration_number", "");
+        final String regno = prefs.getString(REG_NO, "");
         Log.d("Registration number", regno);
         mainView.setVisibility(View.INVISIBLE);
         errorView.setVisibility(View.INVISIBLE);
@@ -201,8 +201,8 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d("Volley response", response);
                 try {
-                    parseJsonAndPopulateViews(response);
-                } catch (JSONException e) {
+                    parseJsonAndPopulateViews(response, false);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -210,41 +210,54 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("Volley error", error.toString());
-                handleVolleyError(error);
+                handleVolleyError();
             }
         }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<>();
-                params.put("regno", prefs.getString("registration_number", ""));
-                params.put("bdate", prefs.getString("date_of_birth", ""));
+                params.put("regno", prefs.getString(REG_NO, ""));
+                params.put("bdate", prefs.getString(DATE_OF_BIRTH, ""));
                 return params;
             }
         };
-        request.setRetryPolicy(new DefaultRetryPolicy(12000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        request.setRetryPolicy(new DefaultRetryPolicy(12000, 0, 0f));
         queue.add(request);
     }
 
-    private void handleVolleyError(VolleyError error) {
+    private void writeFileToCache(String response) throws IOException {
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            return;
+        }
+        File file = new File(getExternalCacheDir() + "/data.json");
+        FileOutputStream fout = new FileOutputStream(file);
+        Log.d("Writing to cache", response);
+        fout.write(response.getBytes());
+        fout.close();
+    }
+
+    private void handleVolleyError() {
         mainView.setVisibility(View.INVISIBLE);
         errorView.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.INVISIBLE);
-        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+        headerError.setVisibility(View.VISIBLE);
+        headerName.setVisibility(View.GONE);
+        headerNumber.setVisibility(View.GONE);
+        headerBranch.setVisibility(View.GONE);
+        headerProgress.setVisibility(View.GONE);
+
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setTitle("Something went wrong!")
+            builder.setTitle("Not reachable")
                     .setMessage("Looks like we're having trouble reaching websis. Would you like us to load a cached copy?")
                     .setCancelable(false)
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
                             try {
                                 getDataFromCache();
                             } catch (IOException e) {
-                                headerError.setVisibility(View.VISIBLE);
-                                headerName.setVisibility(View.GONE);
-                                headerNumber.setVisibility(View.GONE);
-                                headerBranch.setVisibility(View.GONE);
-                                headerProgress.setVisibility(View.GONE);
                                 e.printStackTrace();
                                 if (e instanceof FileNotFoundException) {
                                     errorText.setText("No cached copy exists. Please swipe down to try again!");
@@ -262,26 +275,32 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
             builder.show();
+        } else {
+            Snackbar.make(errorView, "Cannot reach websis", Snackbar.LENGTH_SHORT).show();
         }
+
     }
 
     private void getDataFromCache() throws IOException {
-        File file = new File(getExternalCacheDir() + "/cache.json");
+        File file = new File(getExternalCacheDir() + "/data.json");
         Log.d("File path of cache", file.getAbsolutePath());
         FileInputStream fin = new FileInputStream(file);
         byte[] bytes = new byte[fin.available()];
         int n = fin.read(bytes);
         if (n > 0)
             try {
-                parseJsonAndPopulateViews(new String(bytes));
+                Log.d("Data from cache is ", new String(bytes));
+                parseJsonAndPopulateViews(new String(bytes), true);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        else
-            throw new IOException();
+        fin.close();
     }
 
-    private void parseJsonAndPopulateViews(String response) throws JSONException {
+    private void parseJsonAndPopulateViews(String response, boolean fromCache) throws JSONException, IOException {
+        if (!fromCache || getIntent().getBooleanExtra(CACHE, false)) {
+            writeFileToCache(response);
+        }
         JSONObject json = new JSONObject(response);
         if (json.has("Status") && !json.getBoolean("Status")) {
             mainView.setVisibility(View.INVISIBLE);
@@ -319,6 +338,9 @@ public class MainActivity extends AppCompatActivity {
         mainView.setVisibility(View.VISIBLE);
         errorView.setVisibility(View.INVISIBLE);
         loadingView.setVisibility(View.INVISIBLE);
+        if (fromCache) {
+            Snackbar.make(mainView, "Successfully loaded data from cache!", Snackbar.LENGTH_LONG).show();
+        }
     }
 
     private ArrayList<Mark> getTemporaryList() {
