@@ -10,10 +10,12 @@ public class Semester {
 
     private int semester;
     private ArrayList<Grade> grades;
+    private float gpa;
 
-    public Semester(int semester, ArrayList<Grade> grades) {
+    public Semester(int semester, float gpa, ArrayList<Grade> grades) {
         this.semester = semester;
         this.grades = grades;
+        this.gpa = gpa;
     }
 
     public int getSemester() {
@@ -22,5 +24,9 @@ public class Semester {
 
     public ArrayList<Grade> getGrades() {
         return grades;
+    }
+
+    public float getGpa() {
+        return gpa;
     }
 }

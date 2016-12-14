@@ -34,13 +34,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.manipal.websis.DateUtils;
 import com.manipal.websis.R;
-import com.manipal.websis.RandomUtils;
 import com.manipal.websis.adapter.AttendanceAdapter;
+import com.manipal.websis.adapter.GradesAdapter;
 import com.manipal.websis.adapter.MarksAdapter;
 import com.manipal.websis.model.Attendance;
-import com.manipal.websis.model.Grade;
 import com.manipal.websis.model.Mark;
+import com.manipal.websis.model.Semester;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private RequestQueue queue;
     private ArrayList<Attendance> attendanceList;
     private ArrayList<Mark> marksList;
-    private ArrayList<Grade> gradeList;
+    private ArrayList<Semester> gradeList;
     private ProgressBar headerProgress;
     private Date date;
     private AlertDialog.Builder builder;
@@ -170,19 +171,19 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_attendance:
                 attendanceRecyclerView.setVisibility(View.VISIBLE);
                 marksRecyclerView.setVisibility(View.GONE);
-                gradesRecyclerView.setItemViewCacheSize(View.GONE);
+                gradesRecyclerView.setVisibility(View.GONE);
                 getSupportActionBar().setTitle("Attendance");
                 break;
             case R.id.menu_marks:
                 attendanceRecyclerView.setVisibility(View.GONE);
                 marksRecyclerView.setVisibility(View.VISIBLE);
-                gradesRecyclerView.setItemViewCacheSize(View.GONE);
+                gradesRecyclerView.setVisibility(View.GONE);
                 getSupportActionBar().setTitle("Marks");
                 break;
             case R.id.menu_gpa:
                 attendanceRecyclerView.setVisibility(View.GONE);
                 marksRecyclerView.setVisibility(View.GONE);
-                gradesRecyclerView.setItemViewCacheSize(View.VISIBLE);
+                gradesRecyclerView.setVisibility(View.VISIBLE);
                 getSupportActionBar().setTitle("Grades");
                 break;
         }
@@ -309,6 +310,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void parseJsonAndPopulateViews(String response, boolean fromCache) throws JSONException, IOException {
+
         if (!fromCache || getIntent().getBooleanExtra(CACHE, false)) {
             writeFileToCache(response);
         }
@@ -322,25 +324,33 @@ public class MainActivity extends AppCompatActivity {
         JSONArray attendance = json.getJSONArray("Attendance");
         attendanceList = new ArrayList<>();
         marksList = new ArrayList<>();
+        gradeList = new ArrayList<>();
         for (int i = 0; i < attendance.length(); i++) {
             JSONObject sub = attendance.getJSONObject(i);
             if (!sub.getString("Name").contains("Lab"))
                 attendanceList.add(new Attendance(sub.getString("Name"), sub.getString("Course Code"), sub.getString("Updated"), Integer.valueOf(sub.getString("Classes")), Integer.valueOf(sub.getString("Attended")), Integer.valueOf(sub.getString("%"))));
         }
-        attendanceRecyclerView.setAdapter(new AttendanceAdapter(MainActivity.this, attendanceList));
-        /*JSONArray marks1 = json.getJSONObject("Scores").getJSONArray("Internal Assesment 1");
+        JSONArray marks1 = json.getJSONObject("Scores").getJSONArray("Internal Assesment 1");
         JSONArray marks2 = json.getJSONObject("Scores").getJSONArray("Internal Assesment 2");
         JSONArray marks3 = json.getJSONObject("Scores").getJSONArray("Internal Assesment 3");
         for (int i = 0; i < marks1.length(); i++) {
-            String subjectName = marks1.getJSONObject(i).getString("Course");
-            String subjectCode = marks1.getJSONObject(i).getString("Course Code");
-            String mark1s = marks1.getJSONObject(i).getString("Marks");
-        }*/
-        marksRecyclerView.setAdapter(new MarksAdapter(MainActivity.this, getTemporaryList()));
+            marksList.add(new Mark(marks1.getJSONObject(i).getString("Course"), marks1.getJSONObject(i).getString("Course Code"), marks1.getJSONObject(i).getString("Marks"), marks2.getJSONObject(i).getString("Marks"), marks3.getJSONObject(i).getString("Marks")));
+        }
         JSONObject user = json.getJSONObject("User Data");
+        String branch = user.getString("Branch");
+        branch = branch.substring(0, branch.length() - 11);
+        JSONObject grades = json.getJSONObject("GPA");
+        int k = 1;
+        while (grades.has(branch + " Semester " + k)) {
+            gradeList.add(new Semester(k, Float.valueOf(grades.getString(branch + " Semester " + k)), null));
+            k++;
+        }
+        attendanceRecyclerView.setAdapter(new AttendanceAdapter(MainActivity.this, attendanceList));
+        marksRecyclerView.setAdapter(new MarksAdapter(MainActivity.this, marksList));
+        gradesRecyclerView.setAdapter(new GradesAdapter(MainActivity.this, gradeList));
         headerName.setText(user.getString("Name"));
         headerNumber.setText(user.getString("Registration Number"));
-        headerBranch.setText(user.getString("Branch"));
+        headerBranch.setText(branch);
         headerName.setVisibility(View.VISIBLE);
         headerNumber.setVisibility(View.VISIBLE);
         headerBranch.setVisibility(View.VISIBLE);
@@ -351,23 +361,13 @@ public class MainActivity extends AppCompatActivity {
         loadingView.setVisibility(View.INVISIBLE);
         if (fromCache) {
             String dateFormat = SimpleDateFormat.getInstance().format(date);
-            snackbar = Snackbar.make(mainView, "Offline data updated on " + RandomUtils.getProperDateMessage(dateFormat), 10000);
+            snackbar = Snackbar.make(mainView, "Last updated on " + DateUtils.getProperDateMessage(dateFormat), 10000);
             snackbar.setAction("Dismiss", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                 }
             }).setDuration(10000).setActionTextColor(Color.YELLOW).show();
         }
-    }
-
-    private ArrayList<Mark> getTemporaryList() {
-        ArrayList<Mark> list = new ArrayList<>();
-        list.add(new Mark("Computer Architecture", "CSE 3101", "8", "11", "--"));
-        list.add(new Mark("Operating Systems", "CSE 3102", "11.5", "13.5", "20"));
-        list.add(new Mark("Computer Networks", "CSE 3103", "12.5", "12", "--"));
-        list.add(new Mark("Software Engineering", "CSE 3104", "1", "10.5", "--"));
-        list.add(new Mark("Business Intelligence", "CSE 3105", "12", "13", "--"));
-        return list;
     }
 
     private void logoutUser() {

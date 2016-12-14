@@ -18,7 +18,7 @@ public class Grade {
         return grade;
     }
 
-    enum GradeValue {
-        A1, A, B, C, D, E, F
+    public enum GradeValue {
+        A1, A, B, C, D, E, F, DT
     }
 }

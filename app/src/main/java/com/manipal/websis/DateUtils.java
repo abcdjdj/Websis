@@ -3,7 +3,7 @@ package com.manipal.websis;
 
 import android.util.Log;
 
-public class RandomUtils {
+public class DateUtils {
 
     public static String getProperDateMessage(String dateTime) {
 

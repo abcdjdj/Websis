@@ -32,7 +32,7 @@ public class MarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ((MarksViewHolder) holder).subjectName.setText(getShortName(list.get(position).getSubject()));
-        ((MarksViewHolder) holder).subjectCode.setText(list.get(position).getSubjectCode());
+        ((MarksViewHolder) holder).subjectCode.setText(list.get(position).getSubjectCode().toUpperCase());
         ((MarksViewHolder) holder).sessionalOne.setText("" + list.get(position).getMark1());
         ((MarksViewHolder) holder).sessionalTwo.setText("" + list.get(position).getMark2());
         ((MarksViewHolder) holder).assignments.setText("" + list.get(position).getMark3());
