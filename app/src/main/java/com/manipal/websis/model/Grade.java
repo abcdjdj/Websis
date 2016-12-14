@@ -3,22 +3,24 @@ package com.manipal.websis.model;
 public class Grade {
 
     private String subject;
-    private GradeValue grade;
+    private String grade;
+    private int credits;
 
-    public Grade(String subject, GradeValue grade) {
+    public Grade(String subject, String grade, int credits) {
         this.subject = subject;
         this.grade = grade;
+        this.credits = credits;
     }
 
     public String getSubject() {
         return subject;
     }
 
-    public GradeValue getGrade() {
+    public String getGrade() {
         return grade;
     }
 
-    public enum GradeValue {
-        A1, A, B, C, D, E, F, DT
+    public int getCredits() {
+        return credits;
     }
 }

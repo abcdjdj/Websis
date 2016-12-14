@@ -2,16 +2,16 @@ package com.manipal.websis.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.manipal.websis.R;
+import com.manipal.websis.model.Grade;
 import com.manipal.websis.model.Semester;
 
 import java.util.ArrayList;
@@ -41,12 +41,32 @@ public class GradesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof SemesterViewHolder) {
-            ((SemesterViewHolder) holder).semesterNumber.setText("Semester " + list.get(position - 1).getSemester());
-            ((SemesterViewHolder) holder).gradePoint.setText("" + list.get(position - 1).getGpa());
+            ((SemesterViewHolder) holder).semesterNumber.setText("Semester " + list.get(list.size() - position).getSemester());
+            ((SemesterViewHolder) holder).gradePoint.setText("" + list.get(list.size() - position).getGpa());
+            ((SemesterViewHolder) holder).layout.removeAllViewsInLayout();
+            Log.d("Num mark for semester " + (list.size() - position), "" + list.get(list.size() - position).getGrades().size());
+            for (Grade e : list.get(list.size() - position).getGrades()) {
+                View newSubject = LayoutInflater.from(context).inflate(R.layout.subject_grade, null, false);
+                TextView subject, grade, credits;
+                subject = (TextView) newSubject.findViewById(R.id.gradeSubjectName);
+                grade = (TextView) newSubject.findViewById(R.id.gradeSubject);
+                credits = (TextView) newSubject.findViewById(R.id.subjectCredits);
+                String s = getName(e.getSubject());
+                subject.setText(s);
+                grade.setText(getProperGrade(e.getGrade()));
+                credits.setText(e.getCredits() + " credit(s)");
+                ((SemesterViewHolder) holder).layout.addView(newSubject);
+            }
         } else if (holder instanceof StatsViewHolder) {
             //Do nothing for now
-            Log.d("Show stats", "Nothing yet");
         }
+    }
+
+    private String getProperGrade(String grade) {
+        if (grade.length() == 2)
+            return grade;
+        else
+            return grade + "\u00A0";
     }
 
     @Override
@@ -62,22 +82,33 @@ public class GradesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return 1;
     }
 
+    private String getName(String subject) {
+        if (subject.length() < 21) {
+            int extra = 21 - subject.length();
+            for (int i = 0; i < extra; i++)
+                subject += "\u00A0";
+            return subject;
+        } else if (subject.length() > 21) {
+            if (subject.contains("Lab")) {
+                return subject.substring(0, 17) + "..." + " Lab";
+            } else {
+                return subject.substring(0, 18) + "...";
+            }
+        } else {
+            return subject;
+        }
+    }
+
     private class SemesterViewHolder extends RecyclerView.ViewHolder {
 
         TextView gradePoint, semesterNumber;
-        Button viewGrades;
+        LinearLayout layout;
 
         SemesterViewHolder(final View itemView) {
             super(itemView);
             gradePoint = (TextView) itemView.findViewById(R.id.gradePoint);
             semesterNumber = (TextView) itemView.findViewById(R.id.semesterNumber);
-            viewGrades = (Button) itemView.findViewById(R.id.viewAllGrades);
-            viewGrades.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Snackbar.make(itemView, "Not implemented yet, sorry.", Snackbar.LENGTH_SHORT).show();
-                }
-            });
+            layout = (LinearLayout) itemView.findViewById(R.id.semesterLayout);
         }
     }
 

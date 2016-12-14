@@ -40,6 +40,7 @@ import com.manipal.websis.adapter.AttendanceAdapter;
 import com.manipal.websis.adapter.GradesAdapter;
 import com.manipal.websis.adapter.MarksAdapter;
 import com.manipal.websis.model.Attendance;
+import com.manipal.websis.model.Grade;
 import com.manipal.websis.model.Mark;
 import com.manipal.websis.model.Semester;
 
@@ -342,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
         JSONObject grades = json.getJSONObject("GPA");
         int k = 1;
         while (grades.has(branch + " Semester " + k)) {
-            gradeList.add(new Semester(k, Float.valueOf(grades.getString(branch + " Semester " + k)), null));
+            gradeList.add(new Semester(k, Float.valueOf(grades.getString(branch + " Semester " + k)), getTemporaryGradeList()));
             k++;
         }
         attendanceRecyclerView.setAdapter(new AttendanceAdapter(MainActivity.this, attendanceList));
@@ -368,6 +369,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }).setDuration(10000).setActionTextColor(Color.YELLOW).show();
         }
+    }
+
+    private ArrayList<Grade> getTemporaryGradeList() {
+        ArrayList<Grade> sub = new ArrayList<>();
+        sub.add(new Grade("Computer Architecture", "A", 3));
+        sub.add(new Grade("Operating Systems", "A+", 4));
+        sub.add(new Grade("Computer Networks", "A", 4));
+        sub.add(new Grade("Software Engineering", "C", 4));
+        sub.add(new Grade("Elective I", "A", 3));
+        sub.add(new Grade("Operating Systems Lab", "A", 1));
+        sub.add(new Grade("Algorithms Lab", "C", 1));
+        sub.add(new Grade("Computer Networks Lab", "A+", 2));
+        return sub;
     }
 
     private void logoutUser() {
