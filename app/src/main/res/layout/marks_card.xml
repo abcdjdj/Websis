@@ -23,6 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dp"
+            android:textColor="#212121"
             android:layout_marginTop="10dp"
             android:text="Computer Architecture"
             android:textSize="15sp"
@@ -43,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/marksSubjectName"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="30dp"
             android:text="Sessional One" />
 
         <TextView
@@ -52,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/marksSubjectName"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="27dp"
             android:layout_toRightOf="@id/sessionalOneText"
             android:text="13.5"
             android:textSize="20sp"
@@ -107,9 +108,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/attendanceUpdatedAt"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="135dp"
             android:layout_marginTop="35dp"
-            android:layout_toRightOf="@+id/sessionalTwoText"
+            android:layout_marginRight="30dp"
+            android:layout_alignParentRight="true"
             android:gravity="center"
             android:textColor="#212121"
             android:text="43.5"
@@ -121,8 +122,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignRight="@+id/subjectTotal"
+            android:layout_marginRight="1dp"
             android:layout_below="@id/subjectTotal"
-            android:layout_marginLeft="105dp"
             android:layout_marginTop="5dp"
             android:text="out of 50" />
 

@@ -1,9 +1,7 @@
 package com.manipal.websis;
 
 
-import android.util.Log;
-
-public class DateUtils {
+public class RandomUtils {
 
     public static String getProperDateMessage(String dateTime) {
 
@@ -18,7 +16,6 @@ public class DateUtils {
 
     private static String getMonth(String dateTime) {
         String months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-        Log.d("Month index", dateTime.substring(0, 2));
         return months[Integer.valueOf(dateTime.substring(0, 2)) - 1];
     }
 
@@ -35,7 +32,33 @@ public class DateUtils {
     }
 
     private static String getTime(String dateTime) {
-        // 12/13/16 22:18
         return dateTime.substring(9, 14);
     }
+
+    public static String toTitleCase(String str) {
+        if (str == null) {
+            return null;
+        }
+        boolean space = true;
+        StringBuilder builder = new StringBuilder(str);
+        final int len = builder.length();
+
+        for (int i=0; i < len; ++i) {
+            char c = builder.charAt(i);
+            if (space) {
+                if (!Character.isWhitespace(c)) {
+                    // Convert to title case and switch out of whitespace mode.
+                    builder.setCharAt(i, Character.toTitleCase(c));
+                    space = false;
+                }
+            } else if (Character.isWhitespace(c)) {
+                space = true;
+            } else {
+                builder.setCharAt(i, Character.toLowerCase(c));
+            }
+        }
+
+        return builder.toString();
+    }
+
 }

@@ -25,6 +25,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:text="Computer Architecture"
+            android:textColor="#212121"
             android:textSize="15sp"
             android:textStyle="bold" />
 
@@ -33,9 +34,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/attendanceSubjectName"
-            android:layout_marginLeft="13dp"
+            android:layout_alignLeft="@id/attendanceSubjectName"
             android:layout_marginTop="3dp"
             android:text="(CSE-1001)"
+            android:textColor="#212121"
             android:textStyle="bold" />
 
         <TextView
@@ -113,14 +115,13 @@
 
         <at.grabner.circleprogress.CircleProgressView
             android:id="@+id/subjectPercentage"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
             android:layout_below="@+id/attendanceUpdatedAt"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="100dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="15dp"
-            android:layout_toRightOf="@+id/classesAttendedText"
-            android:foregroundGravity="center"
             app:cpv_autoTextColor="true"
             app:cpv_barColor="#3d4a97"
             app:cpv_barWidth="2dp"

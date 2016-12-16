@@ -34,8 +34,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.manipal.websis.DateUtils;
 import com.manipal.websis.R;
+import com.manipal.websis.RandomUtils;
 import com.manipal.websis.adapter.AttendanceAdapter;
 import com.manipal.websis.adapter.GradesAdapter;
 import com.manipal.websis.adapter.MarksAdapter;
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
     private RequestQueue queue;
     private ArrayList<Attendance> attendanceList;
     private ArrayList<Mark> marksList;
-    private ArrayList<Semester> gradeList;
+    private ArrayList<Semester> semesterList;
     private ProgressBar headerProgress;
     private Date date;
     private AlertDialog.Builder builder;
@@ -151,12 +151,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 queue.cancelAll(getApplicationContext());
-                getInformation();
+                getInformation(false);
                 refreshLayout.setRefreshing(false);
             }
         });
         if (getIntent().getBooleanExtra(SHOULD_GET, true))
-            getInformation();
+            getInformation(true);
         else {
             String json = getIntent().getStringExtra(USER_DATA);
             try {
@@ -190,8 +190,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void getInformation() {
-
+    private void getInformationRequest() {
         headerName.setVisibility(View.GONE);
         headerNumber.setVisibility(View.GONE);
         headerBranch.setVisibility(View.GONE);
@@ -233,6 +232,39 @@ public class MainActivity extends AppCompatActivity {
         };
         request.setRetryPolicy(new DefaultRetryPolicy(12000, 0, 0f));
         queue.add(request);
+    }
+
+    private void getInformation(boolean maybeCache) {
+
+        if (maybeCache) {
+            File file = new File(getExternalCacheDir() + CACHE_FILE);
+            int read = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+            int write = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (read == PackageManager.PERMISSION_DENIED || write == PackageManager.PERMISSION_DENIED) {
+                getInformationRequest();
+            } else {
+                if (file.exists()) {
+                    long fileTime = file.lastModified();
+                    long currTime = System.currentTimeMillis();
+                    long diff = currTime - fileTime;
+                    if (diff > 600000L) {
+                        Log.d("Difference", "Greater than 10 min");
+                        getInformationRequest();
+                    } else {
+                        Log.d("Difference", "Lesser than 10 min");
+                        try {
+                            readDataFromCache();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+                    getInformationRequest();
+                }
+            }
+        } else {
+            getInformationRequest();
+        }
     }
 
     private void writeFileToCache(String response) throws IOException {
@@ -325,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
         JSONArray attendance = json.getJSONArray("Attendance");
         attendanceList = new ArrayList<>();
         marksList = new ArrayList<>();
-        gradeList = new ArrayList<>();
+        semesterList = new ArrayList<>();
         for (int i = 0; i < attendance.length(); i++) {
             JSONObject sub = attendance.getJSONObject(i);
             if (!sub.getString("Name").contains("Lab"))
@@ -340,20 +372,26 @@ public class MainActivity extends AppCompatActivity {
         JSONObject user = json.getJSONObject("User Data");
         String branch = user.getString("Branch");
         branch = branch.substring(0, branch.length() - 11);
-        JSONObject grades = json.getJSONObject("GPA");
+        JSONObject tmp = json.getJSONObject("Grades").getJSONObject("Details");
         int k = 1;
-        while (grades.has(branch + " Semester " + k)) {
-            ArrayList<Grade> list;
-            if (k % 2 != 0)
-                list = getTemporaryGradeList();
-            else
-                list = getTemporaryList2();
-            gradeList.add(new Semester(k, Float.valueOf(grades.getString(branch + " Semester " + k)), list));
+        while (tmp.has("Semester " + k)) {
+            JSONObject semester = json.getJSONObject("Grades").getJSONObject("Details").getJSONObject("Semester " + k);
+            float gpa = Float.valueOf(semester.getString("GPA"));
+            int creds = Integer.valueOf(semester.getString("NoOfCredits"));
+            ArrayList<Grade> gradeList = new ArrayList<>();
+            JSONArray grades = semester.getJSONArray("Grades");
+            for (int i = 0; i < grades.length(); i++) {
+                String subject = RandomUtils.toTitleCase(grades.getJSONObject(i).getString("Subject"));
+                int credits = Integer.valueOf(grades.getJSONObject(i).getString("Credits"));
+                String gr = grades.getJSONObject(i).getString("Grade");
+                gradeList.add(new Grade(subject, gr, credits));
+            }
+            semesterList.add(new Semester(k, gpa, gradeList, creds));
             k++;
         }
         attendanceRecyclerView.setAdapter(new AttendanceAdapter(MainActivity.this, attendanceList));
         marksRecyclerView.setAdapter(new MarksAdapter(MainActivity.this, marksList));
-        gradesRecyclerView.setAdapter(new GradesAdapter(MainActivity.this, gradeList));
+        gradesRecyclerView.setAdapter(new GradesAdapter(MainActivity.this, semesterList));
         headerName.setText(user.getString("Name"));
         headerNumber.setText(user.getString("Registration Number"));
         headerBranch.setText(branch);
@@ -367,39 +405,13 @@ public class MainActivity extends AppCompatActivity {
         loadingView.setVisibility(View.INVISIBLE);
         if (fromCache) {
             String dateFormat = SimpleDateFormat.getInstance().format(date);
-            snackbar = Snackbar.make(mainView, "Last updated on " + DateUtils.getProperDateMessage(dateFormat), 10000);
+            snackbar = Snackbar.make(mainView, "Last updated on " + RandomUtils.getProperDateMessage(dateFormat), 3000);
             snackbar.setAction("Dismiss", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                 }
-            }).setDuration(10000).setActionTextColor(Color.YELLOW).show();
+            }).setDuration(3000).setActionTextColor(Color.YELLOW).show();
         }
-    }
-
-    private ArrayList<Grade> getTemporaryGradeList() {
-        ArrayList<Grade> sub = new ArrayList<>();
-        sub.add(new Grade("Computer Architecture", "A", 3));
-        sub.add(new Grade("Operating Systems", "A+", 4));
-        sub.add(new Grade("Computer Networks", "A", 4));
-        sub.add(new Grade("Software Engineering", "C", 4));
-        sub.add(new Grade("Elective I", "A", 3));
-        sub.add(new Grade("Operating Systems Lab", "A", 1));
-        sub.add(new Grade("Algorithms Lab", "C", 1));
-        sub.add(new Grade("Computer Networks Lab", "A+", 2));
-        return sub;
-    }
-
-    private ArrayList<Grade> getTemporaryList2() {
-        ArrayList<Grade> sub = new ArrayList<>();
-        sub.add(new Grade("Public Speaking", "C", 3));
-        sub.add(new Grade("Engineering Mathematics 4", "A+", 3));
-        sub.add(new Grade("Formal Languages and Automata theory", "B", 4));
-        sub.add(new Grade("Design and Analysis of Algorithms", "A", 4));
-        sub.add(new Grade("Microprocessors", "A", 3));
-        sub.add(new Grade("Database Systems", "A", 3));
-        sub.add(new Grade("Microprocessors Lab", "A", 1));
-        sub.add(new Grade("Database Systems Lab", "A+", 2));
-        return sub;
     }
 
     private void logoutUser() {
@@ -410,5 +422,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d("File delete", "" + del);
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         finish();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        queue.cancelAll(MainActivity.this);
     }
 }

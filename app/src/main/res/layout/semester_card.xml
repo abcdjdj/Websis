@@ -16,7 +16,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -60,34 +60,44 @@
             android:layout_marginBottom="5dp"
             android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:gravity="left"
-                android:text="Grade point            "
-                android:textColor="#212121"
-                android:textSize="18sp" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/gradePoint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="45dp"
-                android:layout_marginTop="2dp"
-                android:text="8.5"
-                android:textColor="#212121"
-                android:textSize="21sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left"
+                    android:layout_marginTop="2dp"
+                    android:text="Grade point            "
+                    android:textColor="#212121"
+                    android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/totalCredits"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:textSize="14sp"
-                android:textColor="#131313"
-                android:text="22 credit(s)"/>
+                <TextView
+                    android:id="@+id/gradePoint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="8.5"
+                    android:layout_marginRight="20dp"
+                    android:layout_toLeftOf="@+id/totalCredits"
+                    android:textColor="#212121"
+                    android:textSize="21sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/totalCredits"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginTop="6dp"
+                    android:text="22 credit(s)"
+                    android:textColor="#131313"
+                    android:textSize="14sp" />
+
+
+            </RelativeLayout>
 
         </LinearLayout>
 
