@@ -22,6 +22,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.HarambeActivity" />
+
+        <service
+            android:name=".PingService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".service.PingService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

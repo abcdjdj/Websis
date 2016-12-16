@@ -343,7 +343,12 @@ public class MainActivity extends AppCompatActivity {
         JSONObject grades = json.getJSONObject("GPA");
         int k = 1;
         while (grades.has(branch + " Semester " + k)) {
-            gradeList.add(new Semester(k, Float.valueOf(grades.getString(branch + " Semester " + k)), getTemporaryGradeList()));
+            ArrayList<Grade> list;
+            if (k % 2 != 0)
+                list = getTemporaryGradeList();
+            else
+                list = getTemporaryList2();
+            gradeList.add(new Semester(k, Float.valueOf(grades.getString(branch + " Semester " + k)), list));
             k++;
         }
         attendanceRecyclerView.setAdapter(new AttendanceAdapter(MainActivity.this, attendanceList));
@@ -381,6 +386,19 @@ public class MainActivity extends AppCompatActivity {
         sub.add(new Grade("Operating Systems Lab", "A", 1));
         sub.add(new Grade("Algorithms Lab", "C", 1));
         sub.add(new Grade("Computer Networks Lab", "A+", 2));
+        return sub;
+    }
+
+    private ArrayList<Grade> getTemporaryList2() {
+        ArrayList<Grade> sub = new ArrayList<>();
+        sub.add(new Grade("Public Speaking", "C", 3));
+        sub.add(new Grade("Engineering Mathematics 4", "A+", 3));
+        sub.add(new Grade("Formal Languages and Automata theory", "B", 4));
+        sub.add(new Grade("Design and Analysis of Algorithms", "A", 4));
+        sub.add(new Grade("Microprocessors", "A", 3));
+        sub.add(new Grade("Database Systems", "A", 3));
+        sub.add(new Grade("Microprocessors Lab", "A", 1));
+        sub.add(new Grade("Database Systems Lab", "A+", 2));
         return sub;
     }
 

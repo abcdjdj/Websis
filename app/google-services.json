@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "759689395153",
+    "firebase_url": "https://websis-b8b68.firebaseio.com",
+    "project_id": "websis-b8b68",
+    "storage_bucket": "websis-b8b68.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:759689395153:android:8332424a4a2aafa8",
+        "android_client_info": {
+          "package_name": "com.manipal.websis"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "759689395153-4dj7b3ucdbbi4s12s15i764v0b0p87ck.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQMZvSkKhJl6GSu9LhD2B4T7OWGYadzE0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "759689395153-4dj7b3ucdbbi4s12s15i764v0b0p87ck.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

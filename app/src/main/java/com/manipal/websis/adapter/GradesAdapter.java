@@ -3,7 +3,6 @@ package com.manipal.websis.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,9 +41,12 @@ public class GradesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof SemesterViewHolder) {
             ((SemesterViewHolder) holder).semesterNumber.setText("Semester " + list.get(list.size() - position).getSemester());
-            ((SemesterViewHolder) holder).gradePoint.setText("" + list.get(list.size() - position).getGpa());
+            String gr = String.valueOf(list.get(list.size() - position).getGpa());
+            if (gr.length() == 3)
+                gr += 0;
+            ((SemesterViewHolder) holder).gradePoint.setText(gr);
             ((SemesterViewHolder) holder).layout.removeAllViewsInLayout();
-            Log.d("Num mark for semester " + (list.size() - position), "" + list.get(list.size() - position).getGrades().size());
+            int total = 0;
             for (Grade e : list.get(list.size() - position).getGrades()) {
                 View newSubject = LayoutInflater.from(context).inflate(R.layout.subject_grade, null, false);
                 TextView subject, grade, credits;
@@ -55,8 +57,12 @@ public class GradesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 subject.setText(s);
                 grade.setText(getProperGrade(e.getGrade()));
                 credits.setText(e.getCredits() + " credit(s)");
+                total += e.getCredits();
                 ((SemesterViewHolder) holder).layout.addView(newSubject);
             }
+            list.get(list.size() - position).setCredits(total);
+            total++;
+            ((SemesterViewHolder) holder).totalCredits.setText(total + " credit(s)");
         } else if (holder instanceof StatsViewHolder) {
             //Do nothing for now
         }
@@ -101,13 +107,14 @@ public class GradesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private class SemesterViewHolder extends RecyclerView.ViewHolder {
 
-        TextView gradePoint, semesterNumber;
+        TextView gradePoint, semesterNumber, totalCredits;
         LinearLayout layout;
 
         SemesterViewHolder(final View itemView) {
             super(itemView);
             gradePoint = (TextView) itemView.findViewById(R.id.gradePoint);
             semesterNumber = (TextView) itemView.findViewById(R.id.semesterNumber);
+            totalCredits = (TextView) itemView.findViewById(R.id.totalCredits);
             layout = (LinearLayout) itemView.findViewById(R.id.semesterLayout);
         }
     }

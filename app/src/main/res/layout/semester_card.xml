@@ -31,6 +31,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:text="Semster 5"
+                android:textColor="#212121"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -39,8 +40,8 @@
         <LinearLayout
             android:id="@+id/semesterLayout"
             android:layout_width="wrap_content"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
         </LinearLayout>
 
@@ -51,7 +52,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="25dp"
             android:layout_marginTop="5dp"
-            android:background="#c6000000" />
+            android:background="#db2e2e2e" />
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
@@ -65,18 +66,28 @@
                 android:layout_marginLeft="10dp"
                 android:gravity="left"
                 android:text="Grade point            "
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textColor="#212121"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/gradePoint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="53dp"
+                android:layout_marginLeft="45dp"
                 android:layout_marginTop="2dp"
                 android:text="8.5"
-                android:textSize="23sp"
+                android:textColor="#212121"
+                android:textSize="21sp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/totalCredits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:textSize="14sp"
+                android:textColor="#131313"
+                android:text="22 credit(s)"/>
 
         </LinearLayout>
 
