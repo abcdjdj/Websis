@@ -23,9 +23,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dp"
-            android:textColor="#212121"
             android:layout_marginTop="10dp"
             android:text="Computer Architecture"
+            android:textColor="#212121"
             android:textSize="15sp"
             android:textStyle="bold" />
 
@@ -42,8 +42,8 @@
             android:id="@+id/sessionalOneText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/marksSubjectName"
             android:layout_below="@id/marksSubjectName"
-            android:layout_marginLeft="15dp"
             android:layout_marginTop="30dp"
             android:text="Sessional One" />
 
@@ -56,15 +56,15 @@
             android:layout_marginTop="27dp"
             android:layout_toRightOf="@id/sessionalOneText"
             android:text="13.5"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textColor="#212121"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/sessionalTwoText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/sessionalOneText"
             android:layout_below="@id/sessionalOneText"
-            android:layout_marginLeft="15dp"
             android:layout_marginTop="20dp"
             android:text="Sessional Two" />
 
@@ -73,19 +73,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/sessionalOneText"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="14dp"
             android:layout_marginTop="17dp"
             android:layout_toRightOf="@id/sessionalTwoText"
             android:text="11"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textColor="#212121"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/assignmentsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/sessionalTwoText"
             android:layout_below="@id/sessionalTwoText"
-            android:layout_marginLeft="15dp"
             android:layout_marginTop="20dp"
             android:text="Assignments" />
 
@@ -94,26 +94,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/sessionalTwoText"
-            android:layout_marginLeft="25dp"
+            android:layout_marginLeft="24dp"
             android:layout_marginTop="17dp"
             android:layout_toRightOf="@id/assignmentsText"
             android:gravity="right"
             android:text="19"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textColor="#212121"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/subjectTotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_below="@+id/attendanceUpdatedAt"
             android:layout_centerVertical="true"
-            android:layout_marginTop="35dp"
             android:layout_marginRight="30dp"
-            android:layout_alignParentRight="true"
+            android:layout_marginTop="35dp"
             android:gravity="center"
-            android:textColor="#212121"
             android:text="43.5"
+            android:textColor="#212121"
             android:textSize="45sp"
             android:textStyle="bold" />
 
@@ -122,8 +122,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignRight="@+id/subjectTotal"
-            android:layout_marginRight="1dp"
             android:layout_below="@id/subjectTotal"
+            android:layout_marginRight="1dp"
             android:layout_marginTop="5dp"
             android:text="out of 50" />
 
