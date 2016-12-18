@@ -24,12 +24,9 @@
         <activity android:name=".activity.HarambeActivity" />
 
         <service
-            android:name=".PingService"
-            android:enabled="true"
-            android:exported="true" />
-        <service
-            android:name=".service.PingService"
-            android:exported="false"></service>
+            android:name=".service.JobService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

@@ -16,4 +16,6 @@ public class Constants {
 
     public static final String LOGIN_PREFS = "loginprefs";
 
+    public static final int JOB_ID = 69;
+
 }
