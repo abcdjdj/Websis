@@ -1,11 +1,11 @@
-    apply plugin: 'com.android.application'
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
     buildToolsVersion "24.0.1"
     defaultConfig {
         applicationId "com.manipal.websis"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 25
         versionCode 1
         versionName "1.0.0"
@@ -26,5 +26,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.0.1'
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.github.jakob-grabner:Circle-Progress-View:v1.2.9.1'
-    compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
+    compile 'com.android.support:support-v4:25.0.1'
 }

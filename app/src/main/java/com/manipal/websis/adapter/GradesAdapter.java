@@ -55,7 +55,7 @@ public class GradesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 subject = (TextView) newSubject.findViewById(R.id.gradeSubjectName);
                 grade = (TextView) newSubject.findViewById(R.id.gradeSubject);
                 credits = (TextView) newSubject.findViewById(R.id.subjectCredits);
-                String s = getName(e.getSubject());
+                String s = getName(e.getSubject(), 21);
                 subject.setText(s);
                 grade.setText(getProperGrade(e.getGrade()));
                 credits.setText(e.getCredits() + " credit(s)");
@@ -137,17 +137,18 @@ public class GradesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return 1;
     }
 
-    private String getName(String subject) {
-        if (subject.length() < 21) {
-            int extra = 21 - subject.length();
+    private String getName(String subject, int value) {
+        //21
+        if (subject.length() < value) {
+            int extra = value - subject.length();
             for (int i = 0; i < extra; i++)
                 subject += "\u00A0";
             return subject;
-        } else if (subject.length() > 21) {
+        } else if (subject.length() > value) {
             if (subject.contains("Lab")) {
-                return subject.substring(0, 17) + "..." + " Lab";
+                return subject.substring(0, value - 4) + "..." + " Lab";
             } else {
-                return subject.substring(0, 18) + "...";
+                return subject.substring(0, value - 3) + "...";
             }
         } else {
             return subject;

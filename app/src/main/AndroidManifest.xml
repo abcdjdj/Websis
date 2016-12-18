@@ -22,11 +22,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.HarambeActivity" />
-
-        <service
-            android:name=".service.JobService"
-            android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

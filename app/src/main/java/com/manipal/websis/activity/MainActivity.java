@@ -1,18 +1,12 @@
 package com.manipal.websis.activity;
 
 import android.Manifest;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.os.BatteryManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -50,7 +44,6 @@ import com.manipal.websis.model.Attendance;
 import com.manipal.websis.model.Grade;
 import com.manipal.websis.model.Mark;
 import com.manipal.websis.model.Semester;
-import com.manipal.websis.service.JobService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,7 +64,6 @@ import static android.support.design.widget.Snackbar.make;
 import static com.manipal.websis.Constants.CACHE;
 import static com.manipal.websis.Constants.CACHE_FILE;
 import static com.manipal.websis.Constants.DATE_OF_BIRTH;
-import static com.manipal.websis.Constants.JOB_ID;
 import static com.manipal.websis.Constants.LOGIN_PREFS;
 import static com.manipal.websis.Constants.REG_NO;
 import static com.manipal.websis.Constants.SHOULD_GET;
@@ -97,14 +89,12 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog.Builder builder;
     private TextView errorText;
     private Snackbar snackbar;
-    private JobScheduler scheduler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
-        startJobScheduler();
         queue = Volley.newRequestQueue(this);
         prefs = getSharedPreferences(LOGIN_PREFS, MODE_PRIVATE);
         loadingView = findViewById(R.id.main_loading_include);
@@ -176,42 +166,6 @@ public class MainActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public float getBatteryLevel() {
-        Intent batteryIntent = registerReceiver(null, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        int level = batteryIntent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        int scale = batteryIntent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-
-        // Error checking that probably isn't needed but I added just in case.
-        if (level == -1 || scale == -1) {
-            return 50.0f;
-        }
-        return ((float) level / (float) scale) * 100.0f;
-    }
-
-    private void startJobScheduler() {
-        if (scheduler != null) {
-            scheduler.cancelAll();
-            scheduler = null;
-        }
-        scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        JobInfo.Builder builder = new JobInfo.Builder(JOB_ID, new ComponentName(getPackageName(), JobService.class.getName()));
-        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
-        builder.setPeriodic(60*60*1000);
-        if (getBatteryLevel() < 20) {
-            builder.setRequiresDeviceIdle(true);
-            builder.setRequiresCharging(true);
-        } else {
-            builder.setRequiresDeviceIdle(false);
-            builder.setRequiresCharging(false);
-        }
-        int res = scheduler.schedule(builder.build());
-        if (res == JobScheduler.RESULT_SUCCESS) {
-            Log.d("Job Scheduler", "Success");
-        } else {
-            Log.d("Job Scheduler", "Failure");
         }
     }
 
@@ -451,12 +405,12 @@ public class MainActivity extends AppCompatActivity {
         loadingView.setVisibility(View.INVISIBLE);
         if (fromCache) {
             String dateFormat = SimpleDateFormat.getInstance().format(date);
-            snackbar = Snackbar.make(mainView, "Last updated on " + RandomUtils.getProperDateMessage(dateFormat), 3000);
+            snackbar = Snackbar.make(mainView, "Last updated on " + RandomUtils.getProperDateMessage(dateFormat), 5000);
             snackbar.setAction("Dismiss", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                 }
-            }).setDuration(3000).setActionTextColor(Color.YELLOW).show();
+            }).setDuration(5000).setActionTextColor(Color.YELLOW).show();
         }
     }
 
