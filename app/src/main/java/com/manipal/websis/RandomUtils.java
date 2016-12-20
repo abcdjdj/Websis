@@ -1,26 +1,35 @@
 package com.manipal.websis;
 
 
+import android.util.Log;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class RandomUtils {
 
-    public static String getProperDateMessage(String dateTime) {
-
-        String date = getDay(dateTime);
-        String time = getTime(dateTime);
-        return date + getSuffix(date) + " " + getMonth(dateTime) + " at " + time;
+    public static String getProperDateMessage(Date date) throws Exception {
+        Log.d("RandomUtils.getProper()", date.toString());
+        //Dec 19, 2016 20:08:10
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        //String date = getDay(dateTime);
+        //String time = getTime(dateTime);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DATE);
+        String dateFormat = SimpleDateFormat.getTimeInstance().format(date);
+        return day + getSuffix(day) + " " + getMonth(month) + " at " + dateFormat;
     }
 
-    private static String getDay(String dateTime) {
-        return dateTime.substring(3, 5);
-    }
 
-    private static String getMonth(String dateTime) {
+    private static String getMonth(int month) {
         String months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-        return months[Integer.valueOf(dateTime.substring(0, 2)) - 1];
+        return months[month];
     }
 
-    private static String getSuffix(String date) {
-        int dt = (int) date.charAt(date.length() - 1);
+    private static String getSuffix(int date) {
+        int dt = date % 10;
         if (dt == 1)
             return "st";
         else if (dt == 2)
@@ -31,10 +40,6 @@ public class RandomUtils {
             return "th";
     }
 
-    private static String getTime(String dateTime) {
-        return dateTime.substring(9, 14);
-    }
-
     public static String toTitleCase(String str) {
         if (str == null) {
             return null;
@@ -43,7 +48,7 @@ public class RandomUtils {
         StringBuilder builder = new StringBuilder(str);
         final int len = builder.length();
 
-        for (int i=0; i < len; ++i) {
+        for (int i = 0; i < len; ++i) {
             char c = builder.charAt(i);
             if (space) {
                 if (!Character.isWhitespace(c)) {

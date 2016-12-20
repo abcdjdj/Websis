@@ -31,6 +31,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.crash.FirebaseCrash;
 import com.manipal.websis.R;
 
 import org.json.JSONException;
@@ -226,6 +227,7 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
                     }
                 } catch (JSONException e) {
+                    FirebaseCrash.report(e);
                     e.printStackTrace();
                 }
             }

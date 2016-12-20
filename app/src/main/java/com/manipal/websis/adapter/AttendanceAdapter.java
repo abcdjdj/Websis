@@ -29,20 +29,28 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        return new AttendanceViewHolder(LayoutInflater.from(context).inflate(R.layout.attendance_card, parent, false));
+        if (list.size() == 0)
+            return new EmptyViewHolder(LayoutInflater.from(context).inflate(R.layout.empty_list, parent, false));
+        else
+            return new AttendanceViewHolder(LayoutInflater.from(context).inflate(R.layout.attendance_card, parent, false));
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((AttendanceViewHolder) holder).classesBunked.setText(getAttendance(list.get(position).getClassesAbsent()));
-        ((AttendanceViewHolder) holder).classesAttended.setText(getAttendance(list.get(position).getClassesAttended()));
-        ((AttendanceViewHolder) holder).classesTaken.setText(getAttendance(list.get(position).getClassesTaken()));
-        ((AttendanceViewHolder) holder).subjectName.setText(getShortName(list.get(position).getSubject()));
-        ((AttendanceViewHolder) holder).subjectCode.setText("(" + list.get(position).getSubjectCode() + ")");
-        ((AttendanceViewHolder) holder).lastUpdated.setText("" + list.get(position).getLastUpdated());
-        ((AttendanceViewHolder) holder).progressView.setSeekModeEnabled(false);
-        //TODO Change color for less than 75%
-        ((AttendanceViewHolder) holder).progressView.setValueAnimated((float) list.get(position).getPercentage());
+
+        if (holder instanceof AttendanceViewHolder) {
+            ((AttendanceViewHolder) holder).classesBunked.setText(getAttendance(list.get(position).getClassesAbsent()));
+            ((AttendanceViewHolder) holder).classesAttended.setText(getAttendance(list.get(position).getClassesAttended()));
+            ((AttendanceViewHolder) holder).classesTaken.setText(getAttendance(list.get(position).getClassesTaken()));
+            ((AttendanceViewHolder) holder).subjectName.setText(getShortName(list.get(position).getSubject()));
+            ((AttendanceViewHolder) holder).subjectCode.setText("(" + list.get(position).getSubjectCode() + ")");
+            ((AttendanceViewHolder) holder).lastUpdated.setText("" + list.get(position).getLastUpdated());
+            ((AttendanceViewHolder) holder).progressView.setSeekModeEnabled(false);
+            //TODO Change color for less than 75%
+            ((AttendanceViewHolder) holder).progressView.setValueAnimated((float) list.get(position).getPercentage());
+        } else if(holder instanceof EmptyViewHolder) {
+            ((EmptyViewHolder) holder).emptyText.setText("No data available for attendance!");
+        }
     }
 
     private String getAttendance(int classes) {
@@ -63,7 +71,11 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        return list.size();
+
+        if(list.size() == 0)
+            return 1;
+        else
+            return list.size();
     }
 
     private class AttendanceViewHolder extends RecyclerView.ViewHolder {

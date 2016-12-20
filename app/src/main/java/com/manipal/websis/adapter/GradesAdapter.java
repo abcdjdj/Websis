@@ -30,13 +30,19 @@ public class GradesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case 1:
-                return new SemesterViewHolder(LayoutInflater.from(context).inflate(R.layout.semester_card, parent, false));
-            case 0:
-                return new StatsViewHolder(LayoutInflater.from(context).inflate(R.layout.stats_card, parent, false));
+
+        if (list.size() == 0)
+            return new EmptyViewHolder(LayoutInflater.from(context).inflate(R.layout.empty_list, parent, false));
+        else {
+            switch (viewType) {
+                case 1:
+                    return new SemesterViewHolder(LayoutInflater.from(context).inflate(R.layout.semester_card, parent, false));
+                case 0:
+                    return new StatsViewHolder(LayoutInflater.from(context).inflate(R.layout.stats_card, parent, false));
+                default:
+                    return null;
+            }
         }
-        return null;
     }
 
     @SuppressLint("SetTextI18n")
@@ -69,6 +75,8 @@ public class GradesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             ((StatsViewHolder) holder).totalCreditsEarned.setText("" + totCred());
             ((StatsViewHolder) holder).highest.setText(getProperGpa("" + getHighestGpa()));
             ((StatsViewHolder) holder).lowest.setText(getProperGpa("" + getLowestGpa()));
+        } else if (holder instanceof EmptyViewHolder) {
+            ((EmptyViewHolder) holder).emptyText.setText("No data available for grades!");
         }
     }
 
@@ -126,7 +134,10 @@ public class GradesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        return list.size() + 1;
+        if (list.size() == 0)
+            return 1;
+        else
+            return list.size() + 1;
     }
 
     @Override

@@ -35,6 +35,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.crash.FirebaseCrash;
 import com.manipal.websis.R;
 import com.manipal.websis.RandomUtils;
 import com.manipal.websis.adapter.AttendanceAdapter;
@@ -164,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 parseJsonAndPopulateViews(json, false);
             } catch (Exception e) {
+                FirebaseCrash.report(e);
                 e.printStackTrace();
             }
         }
@@ -211,11 +213,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(String response) {
 
                 Log.d("Volley response", response);
-                try {
-                    parseJsonAndPopulateViews(response, false);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                parseJsonAndPopulateViews(response, false);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -255,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             readDataFromCache();
                         } catch (IOException e) {
+                            FirebaseCrash.report(e);
                             e.printStackTrace();
                         }
                     }
@@ -300,6 +299,7 @@ public class MainActivity extends AppCompatActivity {
                             try {
                                 readDataFromCache();
                             } catch (IOException e) {
+                                FirebaseCrash.report(e);
                                 e.printStackTrace();
                                 if (e instanceof FileNotFoundException) {
                                     errorText.setText("No cached copy exists. Please swipe down to try again!");
@@ -336,64 +336,117 @@ public class MainActivity extends AppCompatActivity {
             try {
                 Log.d("Data from cache is ", new String(bytes));
                 parseJsonAndPopulateViews(new String(bytes), true);
-            } catch (JSONException e) {
+            } catch (Exception e) {
+                FirebaseCrash.report(e);
                 e.printStackTrace();
             }
         fin.close();
     }
 
-    private void parseJsonAndPopulateViews(String response, boolean fromCache) throws JSONException, IOException {
+    private void parseJsonAndPopulateViews(String response, boolean fromCache) {
 
-        if (!fromCache || getIntent().getBooleanExtra(CACHE, false)) {
-            writeFileToCache(response);
-        }
-        JSONObject json = new JSONObject(response);
-        if (json.has("Status") && !json.getBoolean("Status")) {
-            mainView.setVisibility(View.INVISIBLE);
-            errorView.setVisibility(View.VISIBLE);
-            loadingView.setVisibility(View.INVISIBLE);
-            return;
-        }
-        JSONArray attendance = json.getJSONArray("Attendance");
         attendanceList = new ArrayList<>();
         marksList = new ArrayList<>();
         semesterList = new ArrayList<>();
-        for (int i = 0; i < attendance.length(); i++) {
-            JSONObject sub = attendance.getJSONObject(i);
-            if (!sub.getString("Name").contains("Lab"))
-                attendanceList.add(new Attendance(sub.getString("Name"), sub.getString("Course Code"), sub.getString("Updated"), Integer.valueOf(sub.getString("Classes")), Integer.valueOf(sub.getString("Attended")), Integer.valueOf(sub.getString("%"))));
-        }
-        JSONArray marks1 = json.getJSONObject("Scores").getJSONArray("Internal Assesment 1");
-        JSONArray marks2 = json.getJSONObject("Scores").getJSONArray("Internal Assesment 2");
-        JSONArray marks3 = json.getJSONObject("Scores").getJSONArray("Internal Assesment 3");
-        for (int i = 0; i < marks1.length(); i++) {
-            marksList.add(new Mark(marks1.getJSONObject(i).getString("Course"), marks1.getJSONObject(i).getString("Course Code"), marks1.getJSONObject(i).getString("Marks"), marks2.getJSONObject(i).getString("Marks"), marks3.getJSONObject(i).getString("Marks")));
-        }
-        JSONObject user = json.getJSONObject("User Data");
-        String branch = user.getString("Branch");
-        branch = branch.substring(0, branch.length() - 11);
-        JSONObject tmp = json.getJSONObject("Grades").getJSONObject("Details");
-        int k = 1;
-        while (tmp.has("Semester " + k)) {
-            JSONObject semester = json.getJSONObject("Grades").getJSONObject("Details").getJSONObject("Semester " + k);
-            float gpa = Float.valueOf(semester.getString("GPA"));
-            int creds = Integer.valueOf(semester.getString("NoOfCredits"));
-            ArrayList<Grade> gradeList = new ArrayList<>();
-            JSONArray grades = semester.getJSONArray("Grades");
-            for (int i = 0; i < grades.length(); i++) {
-                String subject = RandomUtils.toTitleCase(grades.getJSONObject(i).getString("Subject"));
-                int credits = Integer.valueOf(grades.getJSONObject(i).getString("Credits"));
-                String gr = grades.getJSONObject(i).getString("Grade");
-                gradeList.add(new Grade(subject, gr, credits));
+        if (!fromCache || getIntent().getBooleanExtra(CACHE, false)) {
+            try {
+                writeFileToCache(response);
+            } catch (IOException e) {
+                e.printStackTrace();
+                FirebaseCrash.report(e);
             }
-            semesterList.add(new Semester(k, gpa, gradeList, creds));
-            k++;
+        }
+        JSONObject json = null;
+        try {
+            json = new JSONObject(response);
+            if (json.has("Status") && !json.getBoolean("Status")) {
+                mainView.setVisibility(View.INVISIBLE);
+                errorView.setVisibility(View.VISIBLE);
+                loadingView.setVisibility(View.INVISIBLE);
+                return;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            mainView.setVisibility(View.INVISIBLE);
+            errorView.setVisibility(View.VISIBLE);
+            loadingView.setVisibility(View.INVISIBLE);
+            FirebaseCrash.report(e);
+        }
+        try {
+            JSONArray attendance = json.getJSONArray("Attendance");
+            json.getInt("lelatt");
+            for (int i = 0; i < attendance.length(); i++) {
+                JSONObject sub = attendance.getJSONObject(i);
+                if (!sub.getString("Name").contains("Lab")) {
+
+                    String name = sub.getString("Name");
+                    String course = sub.getString("Course Code");
+                    String classes = sub.getString("Classes");
+                    String attended = sub.getString("Attended");
+                    String percent = sub.getString("%");
+                    String updated = sub.getString("Updated");
+                    if (!(classes.charAt(0) == 160 || attended.charAt(0) == 160 || percent.charAt(0) == 160 || updated.charAt(0) == 160))
+                        attendanceList.add(new Attendance(name, course, updated, Integer.valueOf(classes), Integer.valueOf(attended), Integer.valueOf(percent)));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            FirebaseCrash.report(e);
+            attendanceList.clear();
+        }
+        try {
+            json.getInt("lelmark");
+            JSONArray marks1 = json.getJSONObject("Scores").getJSONArray("Internal Assesment 1");
+            JSONArray marks2 = json.getJSONObject("Scores").getJSONArray("Internal Assesment 2");
+            JSONArray marks3 = json.getJSONObject("Scores").getJSONArray("Internal Assesment 3");
+            for (int i = 0; i < marks1.length(); i++) {
+                marksList.add(new Mark(marks1.getJSONObject(i).getString("Course"), marks1.getJSONObject(i).getString("Course Code"), marks1.getJSONObject(i).getString("Marks"), marks2.getJSONObject(i).getString("Marks"), marks3.getJSONObject(i).getString("Marks")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            FirebaseCrash.report(e);
+            marksList.clear();
+        }
+
+        JSONObject user = null;
+        String branch = null;
+        try {
+            user = json.getJSONObject("User Data");
+            branch = user.getString("Branch");
+            headerName.setText(user.getString("Name"));
+            headerNumber.setText(user.getString("Registration Number"));
+            branch = branch.substring(0, branch.length() - 11);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            FirebaseCrash.report(e);
+        }
+        try {
+            json.getInt("lelgrade");
+            JSONObject tmp = json.getJSONObject("Grades").getJSONObject("Details");
+            int k = 1;
+            while (tmp.has("Semester " + k)) {
+                JSONObject semester = json.getJSONObject("Grades").getJSONObject("Details").getJSONObject("Semester " + k);
+                float gpa = Float.valueOf(semester.getString("GPA"));
+                int creds = Integer.valueOf(semester.getString("NoOfCredits"));
+                ArrayList<Grade> gradeList = new ArrayList<>();
+                JSONArray grades = semester.getJSONArray("Grades");
+                for (int i = 0; i < grades.length(); i++) {
+                    String subject = RandomUtils.toTitleCase(grades.getJSONObject(i).getString("Subject"));
+                    int credits = Integer.valueOf(grades.getJSONObject(i).getString("Credits"));
+                    String gr = grades.getJSONObject(i).getString("Grade");
+                    gradeList.add(new Grade(subject, gr, credits));
+                }
+                semesterList.add(new Semester(k, gpa, gradeList, creds));
+                k++;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            FirebaseCrash.report(e);
+            semesterList.clear();
         }
         attendanceRecyclerView.setAdapter(new AttendanceAdapter(MainActivity.this, attendanceList));
         marksRecyclerView.setAdapter(new MarksAdapter(MainActivity.this, marksList));
         gradesRecyclerView.setAdapter(new GradesAdapter(MainActivity.this, semesterList));
-        headerName.setText(user.getString("Name"));
-        headerNumber.setText(user.getString("Registration Number"));
         headerBranch.setText(branch);
         headerName.setVisibility(View.VISIBLE);
         headerNumber.setVisibility(View.VISIBLE);
@@ -404,13 +457,18 @@ public class MainActivity extends AppCompatActivity {
         errorView.setVisibility(View.INVISIBLE);
         loadingView.setVisibility(View.INVISIBLE);
         if (fromCache) {
-            String dateFormat = SimpleDateFormat.getInstance().format(date);
-            snackbar = Snackbar.make(mainView, "Last updated on " + RandomUtils.getProperDateMessage(dateFormat), 5000);
-            snackbar.setAction("Dismiss", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                }
-            }).setDuration(5000).setActionTextColor(Color.YELLOW).show();
+            Log.d("From cache", date.toString());
+            try {
+                snackbar = Snackbar.make(mainView, "Last updated on " + RandomUtils.getProperDateMessage(date), 5000);
+                snackbar.setAction("Dismiss", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                    }
+                }).setDuration(5000).setActionTextColor(Color.YELLOW).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                FirebaseCrash.report(e);
+            }
         }
     }
 

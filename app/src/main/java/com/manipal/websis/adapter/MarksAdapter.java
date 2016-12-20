@@ -26,18 +26,25 @@ public class MarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        return new MarksViewHolder(LayoutInflater.from(context).inflate(R.layout.marks_card, parent, false));
+        if (list.size() == 0)
+            return new EmptyViewHolder(LayoutInflater.from(context).inflate(R.layout.empty_list, parent, false));
+        else
+            return new MarksViewHolder(LayoutInflater.from(context).inflate(R.layout.marks_card, parent, false));
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((MarksViewHolder) holder).subjectName.setText(getShortName(list.get(position).getSubject()));
-        ((MarksViewHolder) holder).subjectCode.setText(list.get(position).getSubjectCode().toUpperCase());
-        ((MarksViewHolder) holder).sessionalOne.setText(getMarks(list.get(position).getMark1()));
-        ((MarksViewHolder) holder).sessionalTwo.setText(getMarks(list.get(position).getMark2()));
-        ((MarksViewHolder) holder).assignments.setText(getMarks(list.get(position).getMark3()));
-        ((MarksViewHolder) holder).total.setText(getTotalMarks(list.get(position)).trim());
-        ((MarksViewHolder) holder).totalOutOf.setText("out of " + getTotalOutOf(list.get(position)));
+        if (holder instanceof MarksViewHolder) {
+            ((MarksViewHolder) holder).subjectName.setText(getShortName(list.get(position).getSubject()));
+            ((MarksViewHolder) holder).subjectCode.setText(list.get(position).getSubjectCode().toUpperCase());
+            ((MarksViewHolder) holder).sessionalOne.setText(getMarks(list.get(position).getMark1()));
+            ((MarksViewHolder) holder).sessionalTwo.setText(getMarks(list.get(position).getMark2()));
+            ((MarksViewHolder) holder).assignments.setText(getMarks(list.get(position).getMark3()));
+            ((MarksViewHolder) holder).total.setText(getTotalMarks(list.get(position)).trim());
+            ((MarksViewHolder) holder).totalOutOf.setText("out of " + getTotalOutOf(list.get(position)));
+        } else if (holder instanceof EmptyViewHolder) {
+            ((EmptyViewHolder) holder).emptyText.setText("No data available for marks!");
+        }
     }
 
     private String getMarks(String mark) {
@@ -85,7 +92,10 @@ public class MarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return list.size();
+        if (list.size() == 0)
+            return 1;
+        else
+            return list.size();
     }
 
     private class MarksViewHolder extends RecyclerView.ViewHolder {

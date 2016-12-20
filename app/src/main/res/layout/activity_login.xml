@@ -99,11 +99,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/login_card"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
-            android:textSize="16sp"
-            android:layout_below="@+id/login_card"
-            android:text="We do not store or share your data." />
+            android:text="We do not store or share your data."
+            android:textSize="16sp" />
 
     </RelativeLayout>
 
