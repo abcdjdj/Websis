@@ -27,7 +27,6 @@ import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -212,7 +211,7 @@ public class LoginActivity extends AppCompatActivity {
                     JSONObject json = new JSONObject(response);
                     if (json.has("status") && !json.getBoolean("status")) {
                         dialog.dismiss();
-                        Snackbar.make(view, "Invalid username or password", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(view, "Invalid username or password (Or websis might be down)", Snackbar.LENGTH_SHORT).show();
                     } else {
                         dialog.dismiss();
                         prefs.edit().putBoolean(AUTH, true)
@@ -236,7 +235,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Log.d("Volley error", error.toString());
                 dialog.dismiss();
-                if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                if (error instanceof NoConnectionError) {
                     Snackbar.make(view, "Please check your connection", Snackbar.LENGTH_SHORT).show();
                 } else
                     Snackbar.make(view, "An error occurred. Please try again", Snackbar.LENGTH_SHORT).show();

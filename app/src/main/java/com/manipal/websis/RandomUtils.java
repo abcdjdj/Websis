@@ -22,7 +22,6 @@ public class RandomUtils {
         return day + getSuffix(day) + " " + getMonth(month) + " at " + dateFormat;
     }
 
-
     private static String getMonth(int month) {
         String months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
         return months[month];
@@ -40,30 +39,36 @@ public class RandomUtils {
             return "th";
     }
 
+    private static String checkRoman(String str) {
+        switch (str.toUpperCase()) {
+            case "I":
+                return "1";
+            case "II":
+                return "2";
+            case "III":
+                return "3";
+            case "IV":
+                return "4";
+            case "V":
+                return "5";
+            default:
+                return str;
+        }
+
+    }
+
     public static String toTitleCase(String str) {
-        if (str == null) {
-            return null;
-        }
-        boolean space = true;
-        StringBuilder builder = new StringBuilder(str);
-        final int len = builder.length();
-
-        for (int i = 0; i < len; ++i) {
-            char c = builder.charAt(i);
-            if (space) {
-                if (!Character.isWhitespace(c)) {
-                    // Convert to title case and switch out of whitespace mode.
-                    builder.setCharAt(i, Character.toTitleCase(c));
-                    space = false;
-                }
-            } else if (Character.isWhitespace(c)) {
-                space = true;
-            } else {
-                builder.setCharAt(i, Character.toLowerCase(c));
+        String[] strs = str.split(" ");
+        String newstr = "";
+        for (int i = 0; i < strs.length; i++) {
+            strs[i] = checkRoman(strs[i]);
+            char tmp[] = strs[i].toCharArray();
+            for (int j = 1; j < tmp.length; j++) {
+                tmp[j] = Character.toLowerCase(tmp[j]);
             }
+            newstr += new String(tmp) + " ";
         }
-
-        return builder.toString();
+        return newstr;
     }
 
 }

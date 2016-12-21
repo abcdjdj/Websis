@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Not reachable")
-                    .setMessage("Looks like we're having trouble reaching websis. Would you like us to load a cached copy?")
+                    .setMessage("We're having trouble reaching websis. Would you like us to load an offline copy?")
                     .setCancelable(false)
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
@@ -374,7 +374,6 @@ public class MainActivity extends AppCompatActivity {
         }
         try {
             JSONArray attendance = json.getJSONArray("Attendance");
-            json.getInt("lelatt");
             for (int i = 0; i < attendance.length(); i++) {
                 JSONObject sub = attendance.getJSONObject(i);
                 if (!sub.getString("Name").contains("Lab")) {
@@ -386,7 +385,7 @@ public class MainActivity extends AppCompatActivity {
                     String percent = sub.getString("%");
                     String updated = sub.getString("Updated");
                     if (!(classes.charAt(0) == 160 || attended.charAt(0) == 160 || percent.charAt(0) == 160 || updated.charAt(0) == 160))
-                        attendanceList.add(new Attendance(name, course, updated, Integer.valueOf(classes), Integer.valueOf(attended), Integer.valueOf(percent)));
+                        attendanceList.add(new Attendance(RandomUtils.toTitleCase(name), course, updated, Integer.valueOf(classes), Integer.valueOf(attended), Integer.valueOf(percent)));
                 }
             }
         } catch (JSONException e) {
@@ -395,12 +394,11 @@ public class MainActivity extends AppCompatActivity {
             attendanceList.clear();
         }
         try {
-            json.getInt("lelmark");
             JSONArray marks1 = json.getJSONObject("Scores").getJSONArray("Internal Assesment 1");
             JSONArray marks2 = json.getJSONObject("Scores").getJSONArray("Internal Assesment 2");
             JSONArray marks3 = json.getJSONObject("Scores").getJSONArray("Internal Assesment 3");
             for (int i = 0; i < marks1.length(); i++) {
-                marksList.add(new Mark(marks1.getJSONObject(i).getString("Course"), marks1.getJSONObject(i).getString("Course Code"), marks1.getJSONObject(i).getString("Marks"), marks2.getJSONObject(i).getString("Marks"), marks3.getJSONObject(i).getString("Marks")));
+                marksList.add(new Mark(RandomUtils.toTitleCase(marks1.getJSONObject(i).getString("Course")), marks1.getJSONObject(i).getString("Course Code"), marks1.getJSONObject(i).getString("Marks"), marks2.getJSONObject(i).getString("Marks"), marks3.getJSONObject(i).getString("Marks")));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -408,7 +406,7 @@ public class MainActivity extends AppCompatActivity {
             marksList.clear();
         }
 
-        JSONObject user = null;
+        JSONObject user;
         String branch = null;
         try {
             user = json.getJSONObject("User Data");
@@ -421,7 +419,6 @@ public class MainActivity extends AppCompatActivity {
             FirebaseCrash.report(e);
         }
         try {
-            json.getInt("lelgrade");
             JSONObject tmp = json.getJSONObject("Grades").getJSONObject("Details");
             int k = 1;
             while (tmp.has("Semester " + k)) {
