@@ -345,6 +345,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void parseJsonAndPopulateViews(String response, boolean fromCache) {
 
+        final String LOG_MESSAGE = prefs.getString(REG_NO, "") + " " + prefs.getString(DATE_OF_BIRTH, "");
         attendanceList = new ArrayList<>();
         marksList = new ArrayList<>();
         semesterList = new ArrayList<>();
@@ -353,6 +354,7 @@ public class MainActivity extends AppCompatActivity {
                 writeFileToCache(response);
             } catch (IOException e) {
                 e.printStackTrace();
+                FirebaseCrash.log(LOG_MESSAGE);
                 FirebaseCrash.report(e);
             }
         }
@@ -370,6 +372,7 @@ public class MainActivity extends AppCompatActivity {
             mainView.setVisibility(View.INVISIBLE);
             errorView.setVisibility(View.VISIBLE);
             loadingView.setVisibility(View.INVISIBLE);
+            FirebaseCrash.log(LOG_MESSAGE);
             FirebaseCrash.report(e);
         }
         try {
@@ -390,6 +393,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            FirebaseCrash.log(LOG_MESSAGE);
             FirebaseCrash.report(e);
             attendanceList.clear();
         }
@@ -402,6 +406,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            FirebaseCrash.log(LOG_MESSAGE);
             FirebaseCrash.report(e);
             marksList.clear();
         }
@@ -416,6 +421,7 @@ public class MainActivity extends AppCompatActivity {
             branch = branch.substring(0, branch.length() - 11);
         } catch (JSONException e) {
             e.printStackTrace();
+            FirebaseCrash.log(LOG_MESSAGE);
             FirebaseCrash.report(e);
         }
         try {
@@ -438,6 +444,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            FirebaseCrash.log(LOG_MESSAGE);
             FirebaseCrash.report(e);
             semesterList.clear();
         }
@@ -464,6 +471,7 @@ public class MainActivity extends AppCompatActivity {
                 }).setDuration(5000).setActionTextColor(Color.YELLOW).show();
             } catch (Exception e) {
                 e.printStackTrace();
+                FirebaseCrash.log(LOG_MESSAGE);
                 FirebaseCrash.report(e);
             }
         }

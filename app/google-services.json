@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "759689395153",
-    "firebase_url": "https://websis-b8b68.firebaseio.com",
-    "project_id": "websis-b8b68",
-    "storage_bucket": "websis-b8b68.appspot.com"
+    "project_number": "811692409480",
+    "firebase_url": "https://websis-5b015.firebaseio.com",
+    "project_id": "websis-5b015",
+    "storage_bucket": "websis-5b015.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:759689395153:android:8332424a4a2aafa8",
+        "mobilesdk_app_id": "1:811692409480:android:8332424a4a2aafa8",
         "android_client_info": {
           "package_name": "com.manipal.websis"
         }
       },
       "oauth_client": [
         {
-          "client_id": "759689395153-4dj7b3ucdbbi4s12s15i764v0b0p87ck.apps.googleusercontent.com",
+          "client_id": "811692409480-bfh3v7gdkq8avohscresdieenunlvph5.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDQMZvSkKhJl6GSu9LhD2B4T7OWGYadzE0"
+          "current_key": "AIzaSyBsh9P9vKowfUGSxY-Lsl_jGuj5RX6grx8"
         }
       ],
       "services": {
@@ -29,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "759689395153-4dj7b3ucdbbi4s12s15i764v0b0p87ck.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2
