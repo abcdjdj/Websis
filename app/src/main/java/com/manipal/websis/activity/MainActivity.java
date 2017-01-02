@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
+        int screen = getIntent().getIntExtra("VALUE", 1);
         queue = Volley.newRequestQueue(this);
         prefs = getSharedPreferences(LOGIN_PREFS, MODE_PRIVATE);
         loadingView = findViewById(R.id.main_loading_include);
@@ -158,6 +159,16 @@ public class MainActivity extends AppCompatActivity {
                 refreshLayout.setRefreshing(false);
             }
         });
+        switch (screen) {
+            case 2:
+                showRecyclerView(R.id.menu_marks);
+                break;
+            case 3:
+                showRecyclerView(R.id.menu_gpa);
+                break;
+            default:
+                showRecyclerView(R.id.menu_attendance);
+        }
         if (getIntent().getBooleanExtra(SHOULD_GET, true))
             getInformation(true);
         else {
