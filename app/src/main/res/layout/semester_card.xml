@@ -43,19 +43,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/subject_grade" />
-
-            <include layout="@layout/subject_grade" />
-
-            <include layout="@layout/subject_grade" />
-
-            <include layout="@layout/subject_grade" />
-
-            <include layout="@layout/subject_grade" />
-
-            <include layout="@layout/subject_grade" />
-
-
         </LinearLayout>
 
         <View

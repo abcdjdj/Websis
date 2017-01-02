@@ -253,4 +253,11 @@ public class LoginActivity extends AppCompatActivity {
         request.setShouldCache(false);
         queue.add(request);
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        queue.cancelAll(LoginActivity.this);
+    }
+
 }

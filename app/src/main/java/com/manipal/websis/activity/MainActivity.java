@@ -162,9 +162,11 @@ public class MainActivity extends AppCompatActivity {
         switch (screen) {
             case 2:
                 showRecyclerView(R.id.menu_marks);
+                navView.setCheckedItem(R.id.menu_marks);
                 break;
             case 3:
                 showRecyclerView(R.id.menu_gpa);
+                navView.setCheckedItem(R.id.menu_gpa);
                 break;
             default:
                 showRecyclerView(R.id.menu_attendance);
@@ -327,7 +329,8 @@ public class MainActivity extends AppCompatActivity {
                             make(errorView, "Cannot reach websis", Snackbar.LENGTH_SHORT).show();
                         }
                     });
-            builder.show();
+            if (builder != null)
+                builder.show();
         } else {
             make(errorView, "Cannot reach websis", Snackbar.LENGTH_SHORT).show();
         }
@@ -503,4 +506,11 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         queue.cancelAll(MainActivity.this);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        queue.cancelAll(MainActivity.this);
+    }
+
 }
