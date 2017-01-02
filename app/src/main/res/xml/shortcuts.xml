@@ -1,0 +1,50 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_attendance"
+        android:shortcutId="attendance"
+        android:shortcutLongLabel="@string/attendance"
+        android:shortcutShortLabel="@string/attendance">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.manipal.websis.activity.MainActivity"
+            android:targetPackage="com.manipal.websis.activity">
+            <extra
+                android:name="VALUE"
+                android:value="1" />
+        </intent>
+    </shortcut>
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_marks"
+        android:shortcutId="marks"
+        android:shortcutLongLabel="@string/marks"
+        android:shortcutShortLabel="@string/marks">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.manipal.websis.activity.MainActivity"
+            android:targetPackage="com.manipal.websis.activity">
+            <extra
+                android:name="VALUE"
+                android:value="2" />
+        </intent>
+    </shortcut>
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_grades"
+        android:shortcutId="grades"
+        android:shortcutLongLabel="@string/grades"
+        android:shortcutShortLabel="@string/grades">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.manipal.websis.activity.MainActivity"
+            android:targetPackage="com.manipal.websis.activity">
+            <extra
+                android:name="VALUE"
+                android:value="3" />
+        </intent>
+    </shortcut>
+
+</shortcuts>
