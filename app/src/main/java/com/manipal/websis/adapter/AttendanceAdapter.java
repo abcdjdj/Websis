@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.manipal.websis.R;
+import com.manipal.websis.RandomUtils;
 import com.manipal.websis.model.Attendance;
 
 import java.util.ArrayList;
@@ -44,11 +45,11 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((AttendanceViewHolder) holder).classesTaken.setText(getAttendance(list.get(position).getClassesTaken()));
             ((AttendanceViewHolder) holder).subjectName.setText(getShortName(list.get(position).getSubject()));
             ((AttendanceViewHolder) holder).subjectCode.setText("(" + list.get(position).getSubjectCode() + ")");
-            ((AttendanceViewHolder) holder).lastUpdated.setText("" + list.get(position).getLastUpdated());
+            ((AttendanceViewHolder) holder).lastUpdated.setText(RandomUtils.getAttendanceDate(list.get(position).getLastUpdated()));
             ((AttendanceViewHolder) holder).progressView.setSeekModeEnabled(false);
             //TODO Change color for less than 75%
             ((AttendanceViewHolder) holder).progressView.setValueAnimated((float) list.get(position).getPercentage());
-        } else if(holder instanceof EmptyViewHolder) {
+        } else if (holder instanceof EmptyViewHolder) {
             ((EmptyViewHolder) holder).emptyText.setText("No data available for attendance!");
         }
     }
@@ -72,7 +73,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public int getItemCount() {
 
-        if(list.size() == 0)
+        if (list.size() == 0)
             return 1;
         else
             return list.size();

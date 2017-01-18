@@ -11,7 +11,7 @@ public class RandomUtils {
 
     public static String getProperDateMessage(Date date) throws Exception {
         Log.d("RandomUtils.getProper()", date.toString());
-        //Dec 19, 2016 20:08:10
+        //Dec 19, 2016 2    0:08:10
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         //String date = getDay(dateTime);
@@ -20,6 +20,13 @@ public class RandomUtils {
         int day = c.get(Calendar.DATE);
         String dateFormat = SimpleDateFormat.getTimeInstance().format(date);
         return day + getSuffix(day) + " " + getMonth(month) + " at " + dateFormat;
+    }
+
+    public static String getAttendanceDate(String date) {
+        if (date.equals("Not updated"))
+            return date;
+        String[] arr = date.split("/");
+        return arr[1] + getSuffix(Integer.valueOf(arr[1])) + " " + getMonth(Integer.valueOf(arr[0]) - 1);
     }
 
     private static String getMonth(int month) {

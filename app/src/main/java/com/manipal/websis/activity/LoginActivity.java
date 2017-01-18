@@ -249,7 +249,7 @@ public class LoginActivity extends AppCompatActivity {
                 return params;
             }
         };
-        request.setRetryPolicy(new DefaultRetryPolicy(12000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, 0f));
+        request.setRetryPolicy(new DefaultRetryPolicy(25000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, 0f));
         request.setShouldCache(false);
         queue.add(request);
     }

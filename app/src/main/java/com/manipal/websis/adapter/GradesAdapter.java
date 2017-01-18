@@ -49,7 +49,7 @@ public class GradesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof SemesterViewHolder) {
-            ((SemesterViewHolder) holder).semesterNumber.setText("Semester " + list.get(list.size() - position).getSemester());
+            ((SemesterViewHolder) holder).semesterNumber.setText("Semester " + (list.get(list.size() - position).getSemester()));
             String gr = String.valueOf(list.get(list.size() - position).getGpa());
             if (gr.length() == 3)
                 gr += 0;

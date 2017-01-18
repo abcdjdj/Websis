@@ -62,6 +62,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.support.design.widget.Snackbar.make;
+import static com.manipal.websis.Constants.AUTH;
 import static com.manipal.websis.Constants.CACHE;
 import static com.manipal.websis.Constants.CACHE_FILE;
 import static com.manipal.websis.Constants.DATE_OF_BIRTH;
@@ -159,17 +160,22 @@ public class MainActivity extends AppCompatActivity {
                 refreshLayout.setRefreshing(false);
             }
         });
-        switch (screen) {
-            case 2:
-                showRecyclerView(R.id.menu_marks);
-                navView.setCheckedItem(R.id.menu_marks);
-                break;
-            case 3:
-                showRecyclerView(R.id.menu_gpa);
-                navView.setCheckedItem(R.id.menu_gpa);
-                break;
-            default:
-                showRecyclerView(R.id.menu_attendance);
+        if (!prefs.getBoolean(AUTH, false)) {
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
+        } else {
+            switch (screen) {
+                case 2:
+                    showRecyclerView(R.id.menu_marks);
+                    navView.setCheckedItem(R.id.menu_marks);
+                    break;
+                case 3:
+                    showRecyclerView(R.id.menu_gpa);
+                    navView.setCheckedItem(R.id.menu_gpa);
+                    break;
+                default:
+                    showRecyclerView(R.id.menu_attendance);
+            }
         }
         if (getIntent().getBooleanExtra(SHOULD_GET, true))
             getInformation(true);
@@ -243,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
                 return params;
             }
         };
-        request.setRetryPolicy(new DefaultRetryPolicy(12000, 0, 0f));
+        request.setRetryPolicy(new DefaultRetryPolicy(25000, 0, 0f));
         queue.add(request);
     }
 
@@ -393,17 +399,16 @@ public class MainActivity extends AppCompatActivity {
             JSONArray attendance = json.getJSONArray("Attendance");
             for (int i = 0; i < attendance.length(); i++) {
                 JSONObject sub = attendance.getJSONObject(i);
-                if (!sub.getString("Name").contains("Lab")) {
-
-                    String name = sub.getString("Name");
-                    String course = sub.getString("Course Code");
-                    String classes = sub.getString("Classes");
-                    String attended = sub.getString("Attended");
-                    String percent = sub.getString("%");
-                    String updated = sub.getString("Updated");
-                    if (!(classes.charAt(0) == 160 || attended.charAt(0) == 160 || percent.charAt(0) == 160 || updated.charAt(0) == 160))
-                        attendanceList.add(new Attendance(RandomUtils.toTitleCase(name), course, updated, Integer.valueOf(classes), Integer.valueOf(attended), Integer.valueOf(percent)));
-                }
+                String name = sub.getString("Name");
+                String course = sub.getString("Course Code");
+                String classes = sub.getString("Classes");
+                String attended = sub.getString("Attended");
+                String percent = sub.getString("%");
+                String updated = sub.getString("Updated");
+                if (!(classes.charAt(0) == 160 || attended.charAt(0) == 160 || percent.charAt(0) == 160 || updated.charAt(0) == 160))
+                    attendanceList.add(new Attendance(RandomUtils.toTitleCase(name), course, updated, Integer.valueOf(classes), Integer.valueOf(attended), Integer.valueOf(percent)));
+                else
+                    attendanceList.add(new Attendance(RandomUtils.toTitleCase(name), course, "Not updated", 0, 0, 0));
             }
         } catch (JSONException e) {
             e.printStackTrace();
