@@ -35,8 +35,8 @@ public class MarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof MarksViewHolder) {
-            ((MarksViewHolder) holder).subjectName.setText(getShortName(list.get(position).getSubject()));
-            ((MarksViewHolder) holder).subjectCode.setText(list.get(position).getSubjectCode().toUpperCase());
+            ((MarksViewHolder) holder).subjectName.setText(list.get(position).getSubject());
+            ((MarksViewHolder) holder).subjectCode.setText("(" + list.get(position).getSubjectCode().toUpperCase() + ")");
             ((MarksViewHolder) holder).sessionalOne.setText(getMarks(list.get(position).getMark1()));
             ((MarksViewHolder) holder).sessionalTwo.setText(getMarks(list.get(position).getMark2()));
             ((MarksViewHolder) holder).assignments.setText(getMarks(list.get(position).getMark3()));
@@ -60,13 +60,6 @@ public class MarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             return mark;
     }
 
-    private String getShortName(String subject) {
-        if (subject.length() < 30)
-            return subject;
-        else {
-            return subject.substring(0, 30) + "...";
-        }
-    }
 
     private String getTotalOutOf(Mark mark) {
         int tot = 0;
