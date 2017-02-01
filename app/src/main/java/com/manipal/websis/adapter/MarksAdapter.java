@@ -47,6 +47,29 @@ public class MarksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
+    private String getProperSubjectName(String subject) {
+
+        if (subject.toLowerCase().contains("lab"))
+            return subject;
+        int flag = 0;
+        String brackets = "";
+        for (int i = 0; i < subject.length(); i++) {
+            if (subject.charAt(i) == '(')
+                flag = 1;
+            if (flag != 1)
+                brackets += subject.charAt(i);
+            if (subject.charAt(i) == ')')
+                flag = 0;
+        }
+        String numbers = "";
+        for (int i = 0; i < brackets.length(); i++) {
+            if (!Character.isDigit(brackets.charAt(i)))
+                numbers += brackets.charAt(i);
+        }
+        String res = numbers.replace("Elective", "").replace("-", "").trim();
+        return res;
+    }
+
     private String getMarks(String mark) {
         int len = mark.length(), c = 0;
         for (int i = 0; i < len; i++) {

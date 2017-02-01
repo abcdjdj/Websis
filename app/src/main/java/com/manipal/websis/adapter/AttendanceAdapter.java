@@ -3,7 +3,6 @@ package com.manipal.websis.adapter;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,16 +54,26 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private String getProperSubjectName(String subject) {
-        String words[] = subject.split(new String(new char[]{160}));
-        String subjects[] = words[0].split(" ");
-        String name = "";
-        for (String s : subjects) {
-            Log.d(subject, s);
-            if (!s.toLowerCase().contains("elective") && !Character.isDigit(s.charAt(0)) && !s.contains("(") && !s.contains(")")) {
-                name += s + " ";
-            }
+
+        if (subject.toLowerCase().contains("lab"))
+            return subject;
+        int flag = 0;
+        String brackets = "";
+        for (int i = 0; i < subject.length(); i++) {
+            if (subject.charAt(i) == '(')
+                flag = 1;
+            if (flag != 1)
+                brackets += subject.charAt(i);
+            if (subject.charAt(i) == ')')
+                flag = 0;
         }
-        return name;
+        String numbers = "";
+        for (int i = 0; i < brackets.length(); i++) {
+            if (!Character.isDigit(brackets.charAt(i)))
+                numbers += brackets.charAt(i);
+        }
+        String res = numbers.replace("Elective", "").replace("-", "").trim();
+        return res;
     }
 
     private String getAttendance(int classes) {

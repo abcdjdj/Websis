@@ -428,8 +428,6 @@ public class MainActivity extends AppCompatActivity {
             FirebaseCrash.log(LOG_MESSAGE);
             FirebaseCrash.report(e);
             marksList.clear();
-            marksList.add(new Mark("Engineering Economics and Financial Management", "CSE-3102", "13", "12.5", "--"));
-            marksList.add(new Mark("Compiler Design", "CSE-3102", "11", "14.5", "15"));
         }
 
         JSONObject user;
