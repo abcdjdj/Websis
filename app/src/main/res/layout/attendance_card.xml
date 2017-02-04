@@ -65,7 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="13dp"
+                    android:layout_marginTop="11dp"
                     android:orientation="horizontal">
 
 
@@ -113,11 +113,11 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="3dp"
                     app:cpv_autoTextColor="true"
-                    app:cpv_barColor="#3d4a97"
+                    app:cpv_barColor="#973d40"
                     app:cpv_barWidth="2dp"
                     app:cpv_fillColor="#fcfcfc"
-                    app:cpv_innerContourColor="@color/primary"
-                    app:cpv_outerContourColor="@color/primary"
+                    app:cpv_innerContourColor="#b71c1c"
+                    app:cpv_outerContourColor="#b71c1c"
                     app:cpv_rimColor="#2c6776a4"
                     app:cpv_rimWidth="2dp"
                     app:cpv_seekMode="true"

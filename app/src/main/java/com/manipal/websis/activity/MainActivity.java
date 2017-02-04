@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog.Builder builder;
     private TextView errorText;
     private Snackbar snackbar;
+    private int currid = R.id.menu_attendance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showRecyclerView(int itemId) {
+        currid = itemId;
         switch (itemId) {
             case R.id.menu_attendance:
                 attendanceRecyclerView.setVisibility(View.VISIBLE);
@@ -266,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
                     long fileTime = file.lastModified();
                     long currTime = System.currentTimeMillis();
                     long diff = currTime - fileTime;
-                    if (diff > (20 * 60 * 1000)) {
+                    if (diff > (12 * 60 * 60 * 1000)) {
                         getInformationRequest();
                     } else {
                         try {
@@ -410,6 +412,11 @@ public class MainActivity extends AppCompatActivity {
                 else
                     attendanceList.add(new Attendance(RandomUtils.toTitleCase(name), course, "Not updated", 0, 0, 0));
             }
+            int num = 0;
+            for (Attendance e : attendanceList) {
+                if (e.getPercentage() < 75 && e.getPercentage() != 0)
+                    num++;
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             FirebaseCrash.log(LOG_MESSAGE);
@@ -497,13 +504,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logoutUser() {
-        queue.cancelAll(MainActivity.this);
-        prefs.edit().clear().apply();
-        File file = new File(getExternalCacheDir() + CACHE_FILE);
-        boolean del = file.delete();
-        Log.d("File delete", "" + del);
-        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-        finish();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Logout")
+                .setMessage("Would you like to log out?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        queue.cancelAll(MainActivity.this);
+                        prefs.edit().clear().apply();
+                        File file = new File(getExternalCacheDir() + CACHE_FILE);
+                        boolean del = file.delete();
+                        Log.d("File delete", "" + del);
+                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        navView.setCheckedItem(currid);
+                    }
+                })
+                .setCancelable(false)
+                .show();
+
     }
 
     @Override

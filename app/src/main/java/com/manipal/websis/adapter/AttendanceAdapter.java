@@ -1,6 +1,7 @@
 package com.manipal.websis.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,13 +33,13 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         if (list.size() == 0)
             return new EmptyViewHolder(LayoutInflater.from(context).inflate(R.layout.empty_list, parent, false));
-        else
+        else {
             return new AttendanceViewHolder(LayoutInflater.from(context).inflate(R.layout.attendance_card, parent, false));
+        }
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
         if (holder instanceof AttendanceViewHolder) {
             ((AttendanceViewHolder) holder).classesBunked.setText(getAttendance(list.get(position).getClassesAbsent()));
             ((AttendanceViewHolder) holder).classesAttended.setText(getAttendance(list.get(position).getClassesAttended()));
@@ -47,6 +48,19 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((AttendanceViewHolder) holder).lastUpdated.setText("(" + RandomUtils.getAttendanceDate(list.get(position).getLastUpdated()) + ")");
             ((AttendanceViewHolder) holder).progressView.setSeekModeEnabled(false);
             //TODO Change color for less than 75%
+            if (list.get(position).getPercentage() >= 75 || list.get(position).getPercentage() == 0) {
+                ((AttendanceViewHolder) holder).progressView.setBarColor(Color.parseColor("#3d4a97"));
+                ((AttendanceViewHolder) holder).progressView.setFillCircleColor(Color.parseColor("#fcfcfc"));
+                ((AttendanceViewHolder) holder).progressView.setInnerContourColor(context.getResources().getColor(R.color.primary));
+                ((AttendanceViewHolder) holder).progressView.setOuterContourColor(context.getResources().getColor(R.color.primary));
+                ((AttendanceViewHolder) holder).progressView.setRimColor(Color.parseColor("#2c6776a4"));
+            } else {
+                ((AttendanceViewHolder) holder).progressView.setBarColor(Color.parseColor("#973d40"));
+                ((AttendanceViewHolder) holder).progressView.setFillCircleColor(Color.parseColor("#fcfcfc"));
+                ((AttendanceViewHolder) holder).progressView.setInnerContourColor(Color.parseColor("#b71c1c"));
+                ((AttendanceViewHolder) holder).progressView.setOuterContourColor(Color.parseColor("#b71c1c"));
+                ((AttendanceViewHolder) holder).progressView.setRimColor(Color.parseColor("#2c6776a4"));
+            }
             ((AttendanceViewHolder) holder).progressView.setValueAnimated((float) list.get(position).getPercentage());
         } else if (holder instanceof EmptyViewHolder) {
             ((EmptyViewHolder) holder).emptyText.setText("No data available for attendance!");

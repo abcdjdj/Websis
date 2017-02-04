@@ -45,6 +45,7 @@ public class GradesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
@@ -61,7 +62,7 @@ public class GradesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 subject = (TextView) newSubject.findViewById(R.id.gradeSubjectName);
                 grade = (TextView) newSubject.findViewById(R.id.gradeSubject);
                 credits = (TextView) newSubject.findViewById(R.id.subjectCredits);
-                String s = getName(e.getSubject(), 21);
+                String s = getName(e.getSubject(), 23);
                 subject.setText(s);
                 grade.setText(getProperGrade(e.getGrade()));
                 credits.setText(e.getCredits() + " credit(s)");
