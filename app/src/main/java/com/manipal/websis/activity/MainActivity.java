@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog.Builder builder;
     private TextView errorText;
     private Snackbar snackbar;
-    private int currid = R.id.menu_attendance;
+    private int currentNavId = R.id.menu_attendance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showRecyclerView(int itemId) {
-        currid = itemId;
+        currentNavId = itemId;
         switch (itemId) {
             case R.id.menu_attendance:
                 attendanceRecyclerView.setVisibility(View.VISIBLE);
@@ -337,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
                             make(errorView, "Cannot reach websis", Snackbar.LENGTH_SHORT).show();
                         }
                     });
-            if (builder != null)
+            if (builder != null && !this.isFinishing())
                 builder.show();
         } else {
             make(errorView, "Cannot reach websis", Snackbar.LENGTH_SHORT).show();
@@ -397,6 +397,7 @@ public class MainActivity extends AppCompatActivity {
             FirebaseCrash.log(LOG_MESSAGE);
             FirebaseCrash.report(e);
         }
+        int num = 0;
         try {
             JSONArray attendance = json.getJSONArray("Attendance");
             for (int i = 0; i < attendance.length(); i++) {
@@ -412,7 +413,6 @@ public class MainActivity extends AppCompatActivity {
                 else
                     attendanceList.add(new Attendance(RandomUtils.toTitleCase(name), course, "Not updated", 0, 0, 0));
             }
-            int num = 0;
             for (Attendance e : attendanceList) {
                 if (e.getPercentage() < 75 && e.getPercentage() != 0)
                     num++;
@@ -501,6 +501,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseCrash.report(e);
             }
         }
+        //Snackbar.make(mainView, "You have below 75% in " + num + " subjects!", 5000).setDuration(5000).show();
     }
 
     private void logoutUser() {
@@ -524,7 +525,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
-                        navView.setCheckedItem(currid);
+                        navView.setCheckedItem(currentNavId);
                     }
                 })
                 .setCancelable(false)

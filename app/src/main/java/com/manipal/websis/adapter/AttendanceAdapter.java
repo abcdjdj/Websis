@@ -34,7 +34,10 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (list.size() == 0)
             return new EmptyViewHolder(LayoutInflater.from(context).inflate(R.layout.empty_list, parent, false));
         else {
-            return new AttendanceViewHolder(LayoutInflater.from(context).inflate(R.layout.attendance_card, parent, false));
+            if (viewType == 1)
+                return new AttendanceViewHolder(LayoutInflater.from(context).inflate(R.layout.attendance_card, parent, false));
+            else
+                return new StatsViewHolder(LayoutInflater.from(context).inflate(R.layout.attendance_stats_card, parent, false));
         }
     }
 
@@ -99,12 +102,19 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
+    public int getItemViewType(int position) {
+        if (position == 0)
+            return 0;
+        else return 1;
+    }
+
+    @Override
     public int getItemCount() {
 
         if (list.size() == 0)
             return 1;
         else
-            return list.size();
+            return list.size() + 1;
     }
 
     private class AttendanceViewHolder extends RecyclerView.ViewHolder {
@@ -121,6 +131,13 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             subjectName = (TextView) itemView.findViewById(R.id.attendanceSubjectName);
             progressView = (CircleProgressView) itemView.findViewById(R.id.subjectPercentage);
             progressView.setTextTypeface(Typeface.DEFAULT);
+        }
+    }
+
+    private class StatsViewHolder extends RecyclerView.ViewHolder {
+
+        StatsViewHolder(View view) {
+            super(view);
         }
     }
 }

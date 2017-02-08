@@ -123,6 +123,7 @@
                     app:cpv_seekMode="true"
                     app:cpv_textMode="Percent"
                     app:cpv_textSize="40sp"
+                    app:cpv_unit="%"
                     app:cpv_value="0" />
 
             </RelativeLayout>
