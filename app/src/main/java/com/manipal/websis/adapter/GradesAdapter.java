@@ -68,7 +68,7 @@ public class GradesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 credits.setText(e.getCredits() + " credit(s)");
                 ((SemesterViewHolder) holder).layout.addView(newSubject);
             }
-            ((SemesterViewHolder) holder).totalCredits.setText(list.get(list.size() - position).getCredits() + " credit(s)");
+            ((SemesterViewHolder) holder).totalCredits.setText("" + list.get(list.size() - position).getCredits());
         } else if (holder instanceof StatsViewHolder) {
             BigDecimal d = new BigDecimal((double) getCgpa());
             d = d.round(new MathContext(3, RoundingMode.UP));
