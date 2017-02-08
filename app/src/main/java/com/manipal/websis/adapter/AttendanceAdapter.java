@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +24,12 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private Context context;
     private ArrayList<Attendance> list;
+    private int num;
 
-    public AttendanceAdapter(Context context, ArrayList<Attendance> list) {
+    public AttendanceAdapter(Context context, ArrayList<Attendance> list, int num) {
         this.context = context;
         this.list = list;
+        this.num = num;
     }
 
     @Override
@@ -43,6 +47,8 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (num > 0)
+            position--;
         if (holder instanceof AttendanceViewHolder) {
             ((AttendanceViewHolder) holder).classesBunked.setText(getAttendance(list.get(position).getClassesAbsent()));
             ((AttendanceViewHolder) holder).classesAttended.setText(getAttendance(list.get(position).getClassesAttended()));
@@ -67,7 +73,39 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((AttendanceViewHolder) holder).progressView.setValueAnimated((float) list.get(position).getPercentage());
         } else if (holder instanceof EmptyViewHolder) {
             ((EmptyViewHolder) holder).emptyText.setText("No data available for attendance!");
+        } else if (holder instanceof StatsViewHolder) {
+
+            String lowSubjects = "You have less than 75% attendance in ";
+            int i = 0;
+            Log.d("Num is ", "" + num);
+            for (Attendance e : list) {
+                if (e.getPercentage() < 75 && e.getPercentage() != 0) {
+                    if (i == 0)
+                        lowSubjects += "<b>" + getShortSubjectName(getProperSubjectName(e.getSubject())) + "</b>";
+                    else if (i == num - 1)
+                        lowSubjects += ", and " + "<b>" + getShortSubjectName(getProperSubjectName(e.getSubject())) + "</b>";
+                    else
+                        lowSubjects += ", " + "<b>" + getShortSubjectName(getProperSubjectName(e.getSubject())) + "</b>";
+                    i++;
+                }
+            }
+            lowSubjects += ".";
+            ((StatsViewHolder) holder).attendanceAlert.setText(Html.fromHtml(lowSubjects));
         }
+    }
+
+    private boolean stopWord(String s) {
+        return s.toLowerCase().contains("of") || s.toLowerCase().contains("and");
+    }
+
+    private String getShortSubjectName(String properSubjectName) {
+        String words[] = properSubjectName.split(" ");
+        String shortName = "";
+        for (String s : words) {
+            if (Character.isLetter(s.charAt(0)) && !stopWord(s))
+                shortName += s.charAt(0);
+        }
+        return shortName;
     }
 
     private String getProperSubjectName(String subject) {
@@ -103,6 +141,8 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemViewType(int position) {
+        if (num == 0)
+            return 1;
         if (position == 0)
             return 0;
         else return 1;
@@ -113,8 +153,10 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         if (list.size() == 0)
             return 1;
-        else
+        else if (num > 0)
             return list.size() + 1;
+        else
+            return list.size();
     }
 
     private class AttendanceViewHolder extends RecyclerView.ViewHolder {
@@ -136,8 +178,11 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private class StatsViewHolder extends RecyclerView.ViewHolder {
 
+        TextView attendanceAlert;
+
         StatsViewHolder(View view) {
             super(view);
+            attendanceAlert = (TextView) view.findViewById(R.id.attendanceAlertText);
         }
     }
 }

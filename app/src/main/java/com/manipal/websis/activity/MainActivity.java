@@ -474,7 +474,7 @@ public class MainActivity extends AppCompatActivity {
             FirebaseCrash.report(e);
             semesterList.clear();
         }
-        attendanceRecyclerView.setAdapter(new AttendanceAdapter(MainActivity.this, attendanceList));
+        attendanceRecyclerView.setAdapter(new AttendanceAdapter(MainActivity.this, attendanceList, num));
         marksRecyclerView.setAdapter(new MarksAdapter(MainActivity.this, marksList));
         gradesRecyclerView.setAdapter(new GradesAdapter(MainActivity.this, semesterList));
         headerBranch.setText(branch);
@@ -501,7 +501,6 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseCrash.report(e);
             }
         }
-        //Snackbar.make(mainView, "You have below 75% in " + num + " subjects!", 5000).setDuration(5000).show();
     }
 
     private void logoutUser() {
