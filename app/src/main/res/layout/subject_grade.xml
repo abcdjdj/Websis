@@ -13,6 +13,7 @@
         android:layout_marginLeft="10dp"
         android:ellipsize="end"
         android:maxLines="1"
+        android:textColor="#212121"
         android:text="Operating Systems Lab"
         android:textSize="14sp" />
 
@@ -36,6 +37,7 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="25dp"
         android:text="4 credit(s)"
+        android:textColor="#212121"
         android:textSize="14sp" />
 
 </RelativeLayout>

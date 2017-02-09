@@ -53,7 +53,8 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((AttendanceViewHolder) holder).classesBunked.setText(getAttendance(list.get(position).getClassesAbsent()));
             ((AttendanceViewHolder) holder).classesAttended.setText(getAttendance(list.get(position).getClassesAttended()));
             ((AttendanceViewHolder) holder).classesTaken.setText(getAttendance(list.get(position).getClassesTaken()));
-            ((AttendanceViewHolder) holder).subjectName.setText(getProperSubjectName(list.get(position).getSubject()));
+            String subjectName = getProperSubjectName(list.get(position).getSubject());
+            ((AttendanceViewHolder) holder).subjectName.setText(Html.fromHtml(subjectName));
             ((AttendanceViewHolder) holder).lastUpdated.setText("(" + RandomUtils.getAttendanceDate(list.get(position).getLastUpdated()) + ")");
             ((AttendanceViewHolder) holder).progressView.setSeekModeEnabled(false);
             //TODO Change color for less than 75%
