@@ -57,7 +57,11 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((AttendanceViewHolder) holder).subjectName.setText(Html.fromHtml(subjectName));
             ((AttendanceViewHolder) holder).lastUpdated.setText("(" + RandomUtils.getAttendanceDate(list.get(position).getLastUpdated()) + ")");
             ((AttendanceViewHolder) holder).progressView.setSeekModeEnabled(false);
-            //TODO Change color for less than 75%
+            int c = list.get(position).getCredits();
+            String credits = c + " credit";
+            if (c > 1)
+                credits += 's';
+            ((AttendanceViewHolder) holder).credits.setText(credits);
             if (list.get(position).getPercentage() >= 75 || list.get(position).getPercentage() == 0) {
                 ((AttendanceViewHolder) holder).progressView.setBarColor(Color.parseColor("#3d4a97"));
                 ((AttendanceViewHolder) holder).progressView.setFillCircleColor(Color.parseColor("#fcfcfc"));
@@ -162,7 +166,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private class AttendanceViewHolder extends RecyclerView.ViewHolder {
 
-        TextView classesAttended, classesTaken, classesBunked, lastUpdated, subjectName;
+        TextView classesAttended, classesTaken, classesBunked, lastUpdated, subjectName, credits;
         CircleProgressView progressView;
 
         AttendanceViewHolder(View itemView) {
@@ -173,6 +177,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             lastUpdated = (TextView) itemView.findViewById(R.id.attendanceUpdatedAt);
             subjectName = (TextView) itemView.findViewById(R.id.attendanceSubjectName);
             progressView = (CircleProgressView) itemView.findViewById(R.id.subjectPercentage);
+            credits = (TextView) itemView.findViewById(R.id.attendanceCredits);
             progressView.setTextTypeface(Typeface.DEFAULT);
         }
     }

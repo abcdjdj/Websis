@@ -35,7 +35,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="5dp">
 
                     <TextView
                         android:id="@+id/classesTakenText"
@@ -66,7 +66,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="11dp"
+                    android:layout_marginTop="6dp"
                     android:orientation="horizontal">
 
 
@@ -105,14 +105,14 @@
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginTop="2dp"
                 android:layout_weight="0.4">
 
                 <at.grabner.circleprogress.CircleProgressView
                     android:id="@+id/subjectPercentage"
-                    android:layout_width="110dp"
-                    android:layout_height="110dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="3dp"
                     app:cpv_autoTextColor="true"
                     app:cpv_barColor="#973d40"
                     app:cpv_barWidth="2dp"
@@ -141,6 +141,8 @@
             android:layout_marginStart="9dp"
             android:layout_marginTop="11dp"
             android:layout_toLeftOf="@+id/attendanceCredits"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:text="Parallel Computer Architecture And Programming"
             android:textColor="#212121"
             android:textSize="17sp"

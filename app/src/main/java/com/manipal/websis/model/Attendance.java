@@ -5,9 +5,9 @@ public class Attendance {
 
     private String subject, lastUpdated, subjectCode;
     private int classesTaken, classesAttended, classesAbsent;
-    private int percentage;
+    private int percentage, credits;
 
-    public Attendance(String subject, String subjectCode, String lastUpdated, int classesTaken, int classesAttended, int percentage) {
+    public Attendance(String subject, String subjectCode, String lastUpdated, int classesTaken, int classesAttended, int percentage, int credits) {
         this.subject = subject;
         this.subjectCode = subjectCode.toUpperCase();
         this.lastUpdated = lastUpdated;
@@ -15,6 +15,7 @@ public class Attendance {
         this.classesAttended = classesAttended;
         this.classesAbsent = this.classesTaken - this.classesAttended;
         this.percentage = percentage;
+        this.credits = credits;
     }
 
     public String getSubject() {
@@ -43,5 +44,9 @@ public class Attendance {
 
     public String getSubjectCode() {
         return subjectCode;
+    }
+
+    public int getCredits() {
+        return credits;
     }
 }

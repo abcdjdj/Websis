@@ -1,6 +1,9 @@
 package com.manipal.websis.activity;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +11,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -38,6 +42,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.firebase.crash.FirebaseCrash;
 import com.manipal.websis.R;
 import com.manipal.websis.RandomUtils;
+import com.manipal.websis.RefreshDataBroadcast;
 import com.manipal.websis.adapter.AttendanceAdapter;
 import com.manipal.websis.adapter.GradesAdapter;
 import com.manipal.websis.adapter.MarksAdapter;
@@ -93,12 +98,28 @@ public class MainActivity extends AppCompatActivity {
     private Snackbar snackbar;
     private int currentNavId = R.id.menu_attendance;
 
+    public static void registerAlarm(Context context) {
+        Intent i = new Intent(context, RefreshDataBroadcast.class);
+        PendingIntent sender = PendingIntent.getBroadcast(context, 69, i, 0);
+
+        // We want the alarm to go off 3 seconds from now.
+        long firstTime = SystemClock.elapsedRealtime();
+        firstTime += 1000 * 60 * 60 * 60;//start 3 seconds after first register.
+
+        // Schedule the alarm!
+        AlarmManager am = (AlarmManager) context
+                .getSystemService(ALARM_SERVICE);
+        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, 1000 * 60 * 60 * 30, sender);//10min interval
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
         int screen = getIntent().getIntExtra("VALUE", 1);
+        registerAlarm(this);
         queue = Volley.newRequestQueue(this);
         prefs = getSharedPreferences(LOGIN_PREFS, MODE_PRIVATE);
         loadingView = findViewById(R.id.main_loading_include);
@@ -400,6 +421,17 @@ public class MainActivity extends AppCompatActivity {
         int num = 0;
         try {
             JSONArray attendance = json.getJSONArray("Attendance");
+            JSONArray credits = null;
+            if (json.has("Credits")) {
+                credits = json.getJSONArray("Credits");
+                Log.d("Credits", "Has");
+            } else {
+                Log.d("Credits", "Doesn't have");
+                File file = new File(getExternalCacheDir() + CACHE_FILE);
+                file.delete();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
+            }
             for (int i = 0; i < attendance.length(); i++) {
                 JSONObject sub = attendance.getJSONObject(i);
                 String name = sub.getString("Name");
@@ -408,10 +440,11 @@ public class MainActivity extends AppCompatActivity {
                 String attended = sub.getString("Attended");
                 String percent = sub.getString("%");
                 String updated = sub.getString("Updated");
+                int cred = Integer.valueOf(credits.getJSONObject(i).getString("Credits"));
                 if (!(classes.charAt(0) == 160 || attended.charAt(0) == 160 || percent.charAt(0) == 160 || updated.charAt(0) == 160))
-                    attendanceList.add(new Attendance(RandomUtils.toTitleCase(name), course, updated, Integer.valueOf(classes), Integer.valueOf(attended), Integer.valueOf(percent)));
+                    attendanceList.add(new Attendance(RandomUtils.toTitleCase(name), course, updated, Integer.valueOf(classes), Integer.valueOf(attended), Integer.valueOf(percent), cred));
                 else
-                    attendanceList.add(new Attendance(RandomUtils.toTitleCase(name), course, "Not updated", 0, 0, 0));
+                    attendanceList.add(new Attendance(RandomUtils.toTitleCase(name), course, "Not updated", 0, 0, 0, cred));
             }
             for (Attendance e : attendanceList) {
                 if (e.getPercentage() < 75 && e.getPercentage() != 0)
