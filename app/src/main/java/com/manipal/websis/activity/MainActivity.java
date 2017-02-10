@@ -42,7 +42,6 @@ import com.android.volley.toolbox.Volley;
 import com.google.firebase.crash.FirebaseCrash;
 import com.manipal.websis.R;
 import com.manipal.websis.RandomUtils;
-import com.manipal.websis.RefreshDataBroadcast;
 import com.manipal.websis.adapter.AttendanceAdapter;
 import com.manipal.websis.adapter.GradesAdapter;
 import com.manipal.websis.adapter.MarksAdapter;
@@ -50,6 +49,7 @@ import com.manipal.websis.model.Attendance;
 import com.manipal.websis.model.Grade;
 import com.manipal.websis.model.Mark;
 import com.manipal.websis.model.Semester;
+import com.manipal.websis.receivers.RefreshDataBroadcast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -104,13 +104,12 @@ public class MainActivity extends AppCompatActivity {
 
         // We want the alarm to go off 3 seconds from now.
         long firstTime = SystemClock.elapsedRealtime();
-        firstTime += 1000 * 60 * 60 * 60;//start 3 seconds after first register.
-
+        firstTime += 1000 * 60 * 30;//start 3 seconds after first register.
+        Log.d("Registering Alarm", "registerAlarm()");
         // Schedule the alarm!
         AlarmManager am = (AlarmManager) context
                 .getSystemService(ALARM_SERVICE);
-        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, 1000 * 60 * 60 * 30, sender);//10min interval
-
+        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, 1000 * 60 * 60 * 2, sender);//10min interval
     }
 
     @Override
@@ -549,6 +548,10 @@ public class MainActivity extends AppCompatActivity {
                         File file = new File(getExternalCacheDir() + CACHE_FILE);
                         boolean del = file.delete();
                         Log.d("File delete", "" + del);
+                        Intent ip = new Intent(MainActivity.this, RefreshDataBroadcast.class);
+                        PendingIntent sender = PendingIntent.getBroadcast(MainActivity.this, 69, ip, 0);
+                        AlarmManager am = (AlarmManager) MainActivity.this.getSystemService(ALARM_SERVICE);
+                        am.cancel(sender);
                         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                         finish();
                     }
@@ -562,7 +565,6 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setCancelable(false)
                 .show();
-
     }
 
     @Override
