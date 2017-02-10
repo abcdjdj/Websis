@@ -19,6 +19,11 @@
             android:title="GPA" />
 
         <item
+            android:id="@+id/menu_devs"
+            android:icon="@drawable/ic_info_black_24dp"
+            android:title="Developers" />
+
+        <item
             android:id="@+id/menu_logout"
             android:icon="@drawable/ic_power_settings_new_black_24dp"
             android:title="Logout" />

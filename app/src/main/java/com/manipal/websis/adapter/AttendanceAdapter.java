@@ -3,12 +3,15 @@ package com.manipal.websis.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.manipal.websis.R;
@@ -25,6 +28,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private Context context;
     private ArrayList<Attendance> list;
     private int num;
+    int lastPosition = -1;
 
     public AttendanceAdapter(Context context, ArrayList<Attendance> list, int num) {
         this.context = context;
@@ -97,6 +101,13 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             lowSubjects += ".";
             ((StatsViewHolder) holder).attendanceAlert.setText(Html.fromHtml(lowSubjects));
         }
+        if (position > lastPosition) {
+
+            Animation animation = AnimationUtils.loadAnimation(context,
+                    R.anim.slide_in);
+            holder.itemView.startAnimation(animation);
+            lastPosition = position;
+        }
     }
 
     private boolean stopWord(String s) {
@@ -168,9 +179,11 @@ public class AttendanceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         TextView classesAttended, classesTaken, classesBunked, lastUpdated, subjectName, credits;
         CircleProgressView progressView;
+        CardView cardView;
 
         AttendanceViewHolder(View itemView) {
             super(itemView);
+            cardView = (CardView) itemView.findViewById(R.id.attendanceCard);
             classesAttended = (TextView) itemView.findViewById(R.id.classesAttendedValue);
             classesTaken = (TextView) itemView.findViewById(R.id.classesTakenValue);
             classesBunked = (TextView) itemView.findViewById(R.id.classesBunkedValue);

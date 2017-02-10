@@ -9,6 +9,8 @@
     android:layout_marginLeft="15dp"
     android:layout_marginRight="15dp"
     android:layout_marginTop="5dp"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="3dp"
     app:cardElevation="4dp"
     app:cardUseCompatPadding="true">
@@ -64,9 +66,9 @@
                     android:layout_marginRight="20dp"
                     android:layout_toRightOf="@+id/gradePointTitle"
                     android:text="8.5"
-                    android:textStyle="bold"
                     android:textColor="#212121"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/totalCreditsTitle"
@@ -74,9 +76,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/gradePointTitle"
                     android:layout_marginLeft="15dp"
+                    android:layout_marginTop="1dp"
                     android:gravity="left"
                     android:text="Credits :  "
-                    android:layout_marginTop="1dp"
                     android:textColor="#212121"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -89,8 +91,8 @@
                     android:layout_toRightOf="@+id/totalCreditsTitle"
                     android:text="22"
                     android:textColor="#212121"
-                    android:textStyle="bold"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
 
             </RelativeLayout>

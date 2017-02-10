@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         // Schedule the alarm!
         AlarmManager am = (AlarmManager) context
                 .getSystemService(ALARM_SERVICE);
-        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, 1000 * 60 * 60 * 2, sender);//10min interval
+        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, 1000 * 60 * 60 * 4, sender);//10min interval
     }
 
     @Override
@@ -161,6 +161,9 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.menu_logout:
                         logoutUser();
+                        break;
+                    case R.id.menu_devs:
+                        startActivityForResult(new Intent(MainActivity.this, DevelopersActivity.class), 10);
                         break;
                     default:
                         showRecyclerView(item.getItemId());
@@ -571,6 +574,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         queue.cancelAll(MainActivity.this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 10) {
+            navView.setCheckedItem(currentNavId);
+        }
     }
 
     @Override

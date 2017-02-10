@@ -9,6 +9,8 @@
     android:layout_marginLeft="15dp"
     android:layout_marginRight="15dp"
     android:layout_marginTop="5dp"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="3dp"
     app:cardElevation="4dp"
     app:cardUseCompatPadding="true">

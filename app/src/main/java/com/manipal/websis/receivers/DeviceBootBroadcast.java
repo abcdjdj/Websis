@@ -24,7 +24,7 @@ public class DeviceBootBroadcast extends BroadcastReceiver {
         // Schedule the alarm!
         AlarmManager am = (AlarmManager) context
                 .getSystemService(ALARM_SERVICE);
-        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, 1000 * 60 * 60 * 2, sender);
+        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, 1000 * 60 * 60 * 4, sender);
     }
 
     @Override

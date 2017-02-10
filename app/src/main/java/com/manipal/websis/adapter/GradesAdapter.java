@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,6 +24,7 @@ public class GradesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private Context context;
     private ArrayList<Semester> list;
+    int lastPosition = -1;
 
     public GradesAdapter(Context context, ArrayList<Semester> list) {
         this.context = context;
@@ -78,6 +81,13 @@ public class GradesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             ((StatsViewHolder) holder).lowest.setText(getProperGpa("" + getLowestGpa()));
         } else if (holder instanceof EmptyViewHolder) {
             ((EmptyViewHolder) holder).emptyText.setText("No data available for grades!");
+        }
+        if (position > lastPosition) {
+
+            Animation animation = AnimationUtils.loadAnimation(context,
+                    R.anim.slide_in);
+            holder.itemView.startAnimation(animation);
+            lastPosition = position;
         }
     }
 
